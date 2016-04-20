@@ -5,16 +5,18 @@
     <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
     <script src="dist/hydrant.js" type="text/javascript"></script>
     <script>
-      console.log('Hydrant', Hydrant);
       var hydrant = new Hydrant('http://dcnj2016.dd:8083', {
         user: 'admin',
         pass: 'admin'
       });
-      console.log(hydrant);
       var basicAuthToken = hydrant.getBasicAuthToken();
       console.log(basicAuthToken);
       var xCSRFToken = hydrant.getXCSRFToken();
       console.log(xCSRFToken);
+      var nodeShort = hydrant.get('node', 1);
+      console.log(nodeShort);
+      var nodeLong = hydrant.get('node', 1, 'xml');
+      console.log(nodeLong);
     </script>
   </head>
   <body>

@@ -6,17 +6,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * OUTSTANDING TASKS
- * @TODO: Server-side only, this fills window.btoa
- * import {btoa} from 'btoa';
- * @TODO: Server-side only, this fills XmlHttpRequest
- * import {http} from 'http';
- * @NOTE: Get this working client-side only first. Then build in server-side functionality.
- * @TODO: Determine if getView() needs to be separated out -- what kind of differentiation is necessary between entity types in get()?
- * @TODO: Determine how to save X-CSRF-Token if it's just been GETted so client does not incur additional GETs.
- */
-
 /** Class representing a Hydrant. */
 
 var Hydrant = function () {
@@ -41,12 +30,11 @@ var Hydrant = function () {
 
 
   _createClass(Hydrant, [{
-    key: 'getBasicAuthToken',
-    value: function getBasicAuthToken(creds) {
+    key: 'generateBasicAuthToken',
+    value: function generateBasicAuthToken(creds) {
       // Use default credentials from constructor if no argument is found.
       var credentials = typeof creds === 'undefined' ? this.creds : creds;
       // @TODO: Figure out an alternative for server-side execution.
-      // @TODO: Figure out security issues: transparent user and pass.
       return 'Basic ' + btoa(credentials.user + ':' + credentials.pass);
     }
     /**
@@ -92,7 +80,7 @@ var Hydrant = function () {
         'Content-Type': 'application/' + format
       };
       if (typeof creds != 'undefined') {
-        requestHeaders['Authorization'] = this.getBasicAuthToken(creds);
+        requestHeaders['Authorization'] = this.generateBasicAuthToken(creds);
       }
       return issueRequest('GET', base + '/' + entityType + '/' + requestEntityId.toString() + '?_format=' + format, requestHeaders);
     }
@@ -129,7 +117,7 @@ var Hydrant = function () {
         'Content-Type': 'application/' + format
       };
       if (typeof creds != 'undefined') {
-        requestHeaders['Authorization'] = this.getBasicAuthToken(creds);
+        requestHeaders['Authorization'] = this.generateBasicAuthToken(creds);
       }
       // @TODO: Some sort of validation on body might be necessary.
       return issueRequest('PATCH', base + '/' + entityType + '/' + requestEntityId.toString(), requestHeaders, (typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object' ? body : null);
@@ -159,7 +147,7 @@ var Hydrant = function () {
         'Content-Type': 'application/' + format
       };
       if (typeof creds != 'undefined') {
-        requestHeaders['Authorization'] = this.getBasicAuthToken(creds);
+        requestHeaders['Authorization'] = this.generateBasicAuthToken(creds);
       }
       // @TODO: Some sort of validation on body might be necessary.
       return issueRequest('POST', base + '/entity/' + entityType, requestHeaders, (typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object' ? body : null);
@@ -191,7 +179,7 @@ var Hydrant = function () {
       }
       if (typeof creds != 'undefined') {
         var requestHeaders = {
-          'Authorization': this.getBasicAuthToken(creds)
+          'Authorization': this.generateBasicAuthToken(creds)
         };
       }
       return issueRequest('DELETE', base + '/' + entityType + '/' + entityId, requestHeaders);
