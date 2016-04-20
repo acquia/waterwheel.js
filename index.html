@@ -9,7 +9,7 @@
         user: 'admin',
         pass: 'admin'
       });
-      var basicAuthToken = hydrant.getBasicAuthToken();
+      var basicAuthToken = hydrant.generateBasicAuthToken();
       console.log(basicAuthToken);
       var xCSRFToken = hydrant.getXCSRFToken();
       console.log(xCSRFToken);
