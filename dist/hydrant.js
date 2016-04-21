@@ -117,16 +117,7 @@ var Hydrant = function () {
   }, {
     key: 'getXCSRFToken',
     value: function getXCSRFToken(base) {
-      // return this.issueRequest('GET', ((typeof base === 'undefined') ? this.base : base) + '/rest/session/token');
-      var request = new XMLHttpRequest();
-      request.open('GET', (typeof base === 'undefined' ? this.base : base) + '/rest/session/token');
-      request.onload = function () {
-        if (request.status >= 200 && request.status < 400) {
-          console.log(request.response);
-          return request.response;
-        }
-      };
-      request.send();
+      return this.issueRequest('GET', (typeof base === 'undefined' ? this.base : base) + '/rest/session/token');
     }
     /**
      * Get a content entity in Drupal through REST (GET).
