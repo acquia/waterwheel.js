@@ -38,6 +38,77 @@ var Hydrant = function () {
       return 'Basic ' + btoa(credentials.user + ':' + credentials.pass);
     }
     /**
+     * Prepare method-agnostic parameters for use by XMLHttpRequest.
+     * @param {string} format - The format of the response, such as 'json', 'hal_json', or 'xml'. Defaults to 'json'.
+     * @param {object} options - An object containing additional optional parameters needed to issue request.
+     * @param {string} options.base - The base path of the Drupal site.
+     * @param {object} options.creds - An object containing a Drupal username (user) and password (pass).
+     * @returns {object} An object containing parameters for use by XMLHttpRequest.
+     */
+
+  }, {
+    key: 'prepareRequestParams',
+    value: function prepareRequestParams() {
+      var format = arguments.length <= 0 || arguments[0] === undefined ? 'json' : arguments[0];
+      var options = arguments[1];
+
+      var requestHeaders = {
+        'Content-Type': 'application/' + format,
+        'X-CSRF-Token': this.getXCSRFToken()
+      },
+          requestBase;
+      // Define base and creds if given.
+      if (typeof options != 'undefined') {
+        requestHeaders['Authorization'] = this.generateBasicAuthToken(typeof options.creds != 'undefined' ? options.creds : this.creds);
+        requestBase = typeof options.base != 'undefined' ? options.base : this.base;
+      } else {
+        requestHeaders['Authorizaton'] = this.generateBasicAuthToken(this.creds);
+        requestBase = this.base;
+      }
+      // Return params object.
+      return {
+        headers: requestHeaders,
+        base: requestBase
+      };
+    }
+    /**
+     * Issue a generic XMLHttpRequest.
+     * @param {string} method - The HTTP method to be used in the request.
+     * @param {string} url - The URL against which to issue the request.
+     * @param {object} headers - An object containing request header key-value pairs.
+     * @param {object} body - An object containing the request body to be sent.
+     * @returns {Promise} A Promise that when fulfilled returns a response from the request.
+     */
+
+  }, {
+    key: 'issueRequest',
+    value: function issueRequest(method, url, headers, body) {
+      return new Promise(function pr(resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open(method, url, true);
+        if (typeof headers != 'undefined') {
+          for (var prop in headers) {
+            request.setRequestHeader(prop, headers[prop]);
+          }
+        }
+        request.onload = function () {
+          // @TODO: Handle other response codes properly.
+          if (request.status >= 200 && request.status < 400) {
+            resolve(request.response);
+            console.log(request.response);
+          } else {
+            // @TODO: Handle error properly.
+            reject('Error: Status code ' + request.status + ' on XMLHttpRequest: ' + method + ' at ' + url);
+          }
+        };
+        request.onerror = function () {
+          // @TODO: Handle error properly.
+          reject('Error: Network error on XMLHttpRequest: ' + method + ' at ' + url);
+        };
+        request.send(typeof body === 'undefined' ? null : JSON.stringify(body));
+      });
+    }
+    /**
      * Get an X-CSRF-Token from Drupal's REST module.
      * @param {string} base - The base path of the Drupal site.
      * @return {Promise} A Promise that when fulfilled returns a response containing the X-CSRF-Token.
@@ -46,15 +117,25 @@ var Hydrant = function () {
   }, {
     key: 'getXCSRFToken',
     value: function getXCSRFToken(base) {
-      return issueRequest('GET', (typeof base === 'undefined' ? this.base : base) + '/rest/session/token');
+      // return this.issueRequest('GET', ((typeof base === 'undefined') ? this.base : base) + '/rest/session/token');
+      var request = new XMLHttpRequest();
+      request.open('GET', (typeof base === 'undefined' ? this.base : base) + '/rest/session/token');
+      request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+          console.log(request.response);
+          return request.response;
+        }
+      };
+      request.send();
     }
     /**
      * Get a content entity in Drupal through REST (GET).
      * @param {string} entityType - The content entity type, such as 'node', 'user', or 'taxonomy_term'. Defaults to 'node'.
      * @param {number} entityId - The content entity ID.
      * @param {string} format - The format of the response, such as 'json', 'hal_json', or 'xml'. Defaults to 'json'.
-     * @param {string} base - The base path of the Drupal site.
-     * @param {object} creds - An object containing a Drupal username (user) and password (pass).
+     * @param {object} options - An object containing additional optional parameters needed to issue request.
+     * @param {string} options.base - The base path of the Drupal site.
+     * @param {object} options.creds - An object containing a Drupal username (user) and password (pass).
      * @returns {Promise} A Promise that when fulfilled returns a response containing the content entity.
      * @TODO: Add fields argument for selectivity: entityType, entityId, format, fields, base, creds
      */
@@ -65,33 +146,25 @@ var Hydrant = function () {
       var entityType = arguments.length <= 0 || arguments[0] === undefined ? 'node' : arguments[0];
       var entityId = arguments[1];
       var format = arguments.length <= 2 || arguments[2] === undefined ? 'json' : arguments[2];
-      var base = arguments[3];
-      var creds = arguments[4];
+      var options = arguments[3];
 
-      // Define request base path and entity type.
-      var requestBase = typeof base === 'undefined' ? this.base : base;
-      // Define request entityId.
       if (typeof entityId != 'number') {
         throw new TypeError('Expected parameter entityId must be a number');
+        return;
       } else {
-        var requestEntityId = entityId;
+        var params = this.prepareRequestParams(format, options);
+        return this.issueRequest('GET', params.base + '/' + entityType + '/' + entityId.toString() + '?_format=' + format, params.headers);
       }
-      var requestHeaders = {
-        'Content-Type': 'application/' + format
-      };
-      if (typeof creds != 'undefined') {
-        requestHeaders['Authorization'] = this.generateBasicAuthToken(creds);
-      }
-      return issueRequest('GET', base + '/' + entityType + '/' + requestEntityId.toString() + '?_format=' + format, requestHeaders);
     }
     /**
      * Update or set a content entity in Drupal through REST (PATCH).
      * @param {string} entityType - The content entity type, such as 'node', 'user', or 'taxonomy_term'. Defaults to 'node'.
      * @param {number} entityId - The content entity ID.
      * @param {string} format - The format of the response, such as 'json', 'hal_json', or 'xml'. Defaults to 'json'.
-     * @param {string} base - The base path of the Drupal site.
-     * @param {object} creds - An object containing a Drupal username (user) and password (pass).
      * @param {object} body - An object containing the request body to be sent.
+     * @param {object} options - An object containing additional optional parameters needed to issue request.
+     * @param {string} options.base - The base path of the Drupal site.
+     * @param {object} options.creds - An object containing a Drupal username (user) and password (pass).
      * @returns {Promise} A Promise that when fulfilled returns a response containing the content entity in JSON (as of 8.2).
      */
 
@@ -101,34 +174,25 @@ var Hydrant = function () {
       var entityType = arguments.length <= 0 || arguments[0] === undefined ? 'node' : arguments[0];
       var entityId = arguments[1];
       var format = arguments.length <= 2 || arguments[2] === undefined ? 'json' : arguments[2];
-      var base = arguments[3];
-      var creds = arguments[4];
-      var body = arguments[5];
+      var body = arguments[3];
+      var options = arguments[4];
 
-      // Define request base path.
-      var requestBase = typeof base === 'undefined' ? this.base : base;
-      // Define request entityId.
       if (typeof entityId != 'number') {
         throw new TypeError('Expected parameter entityId must be a number');
+        return;
       } else {
-        var requestEntityId = entityId;
+        var params = this.prepareRequestParams(format, options);
+        return this.issueRequest('PATCH', params.base + '/' + entityType + '/' + entityId, params.headers, (typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object' ? body : null);
       }
-      var requestHeaders = {
-        'Content-Type': 'application/' + format
-      };
-      if (typeof creds != 'undefined') {
-        requestHeaders['Authorization'] = this.generateBasicAuthToken(creds);
-      }
-      // @TODO: Some sort of validation on body might be necessary.
-      return issueRequest('PATCH', base + '/' + entityType + '/' + requestEntityId.toString(), requestHeaders, (typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object' ? body : null);
     }
     /**
      * Create a content entity in Drupal through REST (POST).
      * @param {string} entityType - The content entity type, such as 'node', 'user', or 'taxonomy_term'. Defaults to 'node'.
      * @param {string} format - The format of the response, such as 'json', 'hal_json', or 'xml'. Defaults to 'json'.
-     * @param {string} base - The base path of the Drupal site.
-     * @param {object} creds - An object containing a Drupal username (user) and password (pass).
      * @param {object} body - An object containing the request body to be sent.
+     * @param {object} options - An object containing additional optional parameters needed to issue request.
+     * @param {string} options.base - The base path of the Drupal site.
+     * @param {object} options.creds - An object containing a Drupal username (user) and password (pass).
      * @returns {Promise} A Promise that when fulfilled returns a response containing the content entity in JSON (as of 8.2).
      */
 
@@ -137,27 +201,19 @@ var Hydrant = function () {
     value: function create() {
       var entityType = arguments.length <= 0 || arguments[0] === undefined ? 'node' : arguments[0];
       var format = arguments.length <= 1 || arguments[1] === undefined ? 'json' : arguments[1];
-      var base = arguments[2];
-      var creds = arguments[3];
-      var body = arguments[4];
+      var body = arguments[2];
+      var options = arguments[3];
 
-      // Define request base path.
-      var requestBase = typeof base === 'undefined' ? this.base : base;
-      var requestHeaders = {
-        'Content-Type': 'application/' + format
-      };
-      if (typeof creds != 'undefined') {
-        requestHeaders['Authorization'] = this.generateBasicAuthToken(creds);
-      }
-      // @TODO: Some sort of validation on body might be necessary.
-      return issueRequest('POST', base + '/entity/' + entityType, requestHeaders, (typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object' ? body : null);
+      var params = this.prepareRequestParams(format, options);
+      return this.issueRequest('POST', params.base + '/entity/' + entityType, params.headers, (typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object' ? body : null);
     }
     /**
      * Delete a content entity in Drupal through REST (DELETE).
      * @param {string} entityType - The content entity type, such as 'node', 'user', or 'taxonomy_term'. Defaults to 'node'.
      * @param {number} entityId - The content entity ID.
-     * @param {string} base - The base path of the Drupal site.
-     * @param {object} creds - An object containing a Drupal username (user) and password (pass).
+     * @param {object} options - An object containing additional optional parameters needed to issue request.
+     * @param {string} options.base - The base path of the Drupal site.
+     * @param {object} options.creds - An object containing a Drupal username (user) and password (pass).
      * @returns {Promise} A Promise that when fulfilled returns a response containing the content entity in JSON (as of 8.2).
      */
 
@@ -166,62 +222,18 @@ var Hydrant = function () {
     value: function _delete() {
       var entityType = arguments.length <= 0 || arguments[0] === undefined ? 'node' : arguments[0];
       var entityId = arguments[1];
-      var base = arguments[2];
-      var creds = arguments[3];
+      var options = arguments[2];
 
-      // Define request base path.
-      var requestBase = typeof base === 'undefined' ? this.base : base;
       // Define request entityId.
       if (typeof entityId != 'number') {
         throw new TypeError('Expected parameter entityId must be a number');
+        return;
       } else {
-        var requestEntityId = entityId;
+        var params = this.prepareRequestParams(format, options);
+        return this.issueRequest('DELETE', params.base + '/' + entityType + '/' + entityId, params.headers);
       }
-      if (typeof creds != 'undefined') {
-        var requestHeaders = {
-          'Authorization': this.generateBasicAuthToken(creds)
-        };
-      }
-      return issueRequest('DELETE', base + '/' + entityType + '/' + entityId, requestHeaders);
     }
   }]);
 
   return Hydrant;
 }();
-
-/**
- * Issue a generic XMLHttpRequest.
- * @param {string} method - The HTTP method to be used in the request.
- * @param {string} url - The URL against which to issue the request.
- * @param {object} headers - An object containing request header key-value pairs.
- * @param {object} body - An object containing the request body to be sent.
- * @returns {Promise} A Promise that when fulfilled returns a response from the request.
- */
-
-
-function issueRequest(method, url, headers, body) {
-  return new Promise(function pr(resolve, reject) {
-    var request = new XMLHttpRequest();
-    request.open(method, url);
-    if (typeof headers != 'undefined') {
-      for (var prop in headers) {
-        request.setRequestHeader(prop, headers[prop]);
-      }
-    }
-    request.onload = function () {
-      // @TODO: Handle other response codes properly.
-      if (request.status == 200) {
-        resolve(request.response);
-        console.log(request.response);
-      } else {
-        // @TODO: Handle error properly.
-        reject('Error: Status code ' + request.status + ' on XMLHttpRequest: ' + method + ' at ' + url);
-      }
-    };
-    request.onerror = function () {
-      // @TODO: Handle error properly.
-      reject('Error: Network error on XMLHttpRequest: ' + method + ' at ' + url);
-    };
-    request.send(typeof body === 'undefined' ? null : JSON.stringify(body));
-  });
-}
