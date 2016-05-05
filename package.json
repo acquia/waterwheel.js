@@ -14,7 +14,7 @@
   "main": "lib/hydrant.js",
   "scripts": {
     "build": "./node_modules/.bin/webpack --progress",
-    "test": "istanbul cover --print both nodeunit ./test",
+    "test": "istanbul cover --print summary nodeunit ./test",
     "lint": "eslint .",
     "coverage": "istanbul check-coverage --statements 100.00 --lines 100.00 --branches 100.00 --functions 100.00"
   },

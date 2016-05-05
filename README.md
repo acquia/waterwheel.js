@@ -21,7 +21,7 @@ const Hydrant = require('./lib/hydrant');
 
 const hydrant = new Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
-hydrant.get('node', 1)
+hydrant.api.node.get(1)
   .then(res => {
     // res
   })
@@ -36,7 +36,7 @@ From the browser,
 
 const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
-hydrant.get('node', 1)
+hydrant.api.node.get(1)
   .then(res => {
     // res
   })
