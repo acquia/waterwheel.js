@@ -21,7 +21,7 @@
       var query = hydrant.api.query('node');
       query.condition('field0', 'value0').sort('field1', 'DESC');
       query.orConditionGroup().condition('field2', 'value2', '<>').condition('field3', 'value3');
-      console.log(query.getQueryString());
+      console.log(query.get());
     </script>
   </head>
   <body>
