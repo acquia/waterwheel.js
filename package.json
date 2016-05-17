@@ -25,7 +25,8 @@
     "cms"
   ],
   "dependencies": {
-    "axios": "^0.11.0"
+    "axios": "^0.11.0",
+    "drupal-api": "0.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.8.0",
@@ -44,7 +45,7 @@
     "url": "http://github.com/prestonso/hydrant.git"
   },
   "engines": {
-    "node" : "~6.0.0",
-    "npm" : "~3.8.6"
+    "node": "~6.0.0",
+    "npm": "~3.8.6"
   }
 }
