@@ -28,6 +28,14 @@ hydrant.api.node.get(1)
   .catch(err => {
     // err
   });
+
+hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
+  .then(res => {
+    // result would be first five nodes, where 'field_foo' is equal to 'bar'
+  })
+  .catch(err => {
+    // err
+  });
 ```
 
 From the browser,
@@ -39,6 +47,14 @@ const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'passw
 hydrant.api.node.get(1)
   .then(res => {
     // res
+  })
+  .catch(err => {
+    // err
+  });
+
+hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
+  .then(res => {
+    // result would be first five nodes, where 'field_foo' is equal to 'bar'
   })
   .catch(err => {
     // err
