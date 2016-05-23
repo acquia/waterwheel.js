@@ -23,11 +23,11 @@ module.exports = {
     const Hydrant = requireSubvert.require('../lib/hydrant');
     const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
 
-    test.equal('http://foo.dev', hydrant.getBase(), 'Unexpected URL base.');
+    test.equal('http://foo.dev', hydrant.api.node.getBase(), 'Unexpected URL base.');
 
-    hydrant.setBase('http://foo2.dev');
+    hydrant.api.node.setBase('http://foo2.dev');
 
-    test.equal('http://foo2.dev', hydrant.getBase(), 'URL base was not set correctly.');
+    test.equal('http://foo2.dev', hydrant.api.node.getBase(), 'URL base was not set correctly.');
     test.done();
   },
   credentials: test => {
@@ -35,11 +35,11 @@ module.exports = {
     const Hydrant = requireSubvert.require('../lib/hydrant');
     const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
 
-    test.deepEqual({user: 'a', pass: 'b'}, hydrant.getCredentials(), 'Unexpected credentials.');
+    test.deepEqual({user: 'a', pass: 'b'}, hydrant.api.node.getCredentials(), 'Unexpected credentials.');
 
-    hydrant.setCredentials({user: 'c', pass: 'd'});
+    hydrant.api.node.setCredentials({user: 'c', pass: 'd'});
 
-    test.deepEqual({user: 'c', pass: 'd'}, hydrant.getCredentials(), 'Credentials object was not set correctly.');
+    test.deepEqual({user: 'c', pass: 'd'}, hydrant.api.node.getCredentials(), 'Credentials object was not set correctly.');
     test.done();
   },
   requests: {
@@ -152,15 +152,15 @@ module.exports = {
       test.expect(1);
 
       requireSubvert.subvert('axios', (options) => (
-        Promise.resolve({data: options})
+        Promise.resolve({data: 'foo'})
       ));
 
       const Request = requireSubvert.require('../lib/helpers/request');
       const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
 
-      request.issueRequest('POST', '/entity/1', '12345', {}, 'foo')
+      request.issueRequest('GET', '/entity/1', '12345', {})
         .then(res => {
-          test.deepEqual('foo', res.body, 'Unexpected body returned.');
+          test.deepEqual('foo', res, 'Unexpected headers returned.');
           test.done();
         });
     }
