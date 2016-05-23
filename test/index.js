@@ -166,6 +166,8 @@ module.exports = {
     }
   },
   resources: {
-    node: require('./resources/node')
+    node: require('./resources/node'),
+    menu: require('./resources/menu'),
+    contentType: require('./resources/contentType')
   }
 };
