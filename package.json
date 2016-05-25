@@ -44,7 +44,7 @@
     "url": "http://github.com/prestonso/hydrant.git"
   },
   "engines": {
-    "node" : "~6.0.0",
-    "npm" : "~3.8.6"
+    "node": "~6.0.0",
+    "npm": "~3.8.6"
   }
 }
