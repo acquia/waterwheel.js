@@ -14,10 +14,10 @@ module.exports = {
         Promise.resolve({data: 'getSuccess'})
       ));
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'b', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.get(1, 'json')
+      menu.get('mymenu', 'json')
         .then(res => {
           test.equal('getSuccess', res, 'Unexpected response.');
           test.done();
@@ -26,13 +26,13 @@ module.exports = {
     failure: test => {
       test.expect(2);
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.get(false, 'json')
+      menu.get(false, 'json')
         .catch(err => {
           test.equal(true, err instanceof Error);
-          test.equal(err.message, 'Expected parameter entityId must be a number', 'Unexpected error message.');
+          test.equal(err.message, 'Expected parameter menuName must be a string', 'Unexpected error message.');
           test.done();
         });
     }
@@ -44,10 +44,10 @@ module.exports = {
         Promise.resolve({data: 'setSuccess'})
       ));
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.set(1, 'json', {foo: 'bar'})
+      menu.set('mymenu', 'json', {foo: 'bar'})
         .then(res => {
           test.equal('setSuccess', res, 'Unexpected body returned.');
           test.done();
@@ -56,10 +56,10 @@ module.exports = {
     failure: test => {
       test.expect(2);
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.set(false, 'json', {foo: 'bar'})
+      menu.set(false, 'json', {foo: 'bar'})
         .catch(err => {
           test.equal(true, err instanceof Error);
           test.equal('Expected parameter entityId must be a number', err.message, 'Unexpected error returned.');
@@ -72,10 +72,10 @@ module.exports = {
         Promise.resolve({data: 'setNonObjectBody'})
       ));
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.set(1, 'json', '')
+      menu.set('mymenu', 'json', '')
         .then(res => {
           test.equal('setNonObjectBody', res, 'Unexpected body returned.');
           test.done();
@@ -89,10 +89,10 @@ module.exports = {
         Promise.resolve({data: 'createSuccess'})
       ));
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.create('json', {foo: 'bar'})
+      menu.create('json', {foo: 'bar'})
         .then(res => {
           test.equal('createSuccess', res, 'Unexpected body returned.');
           test.done();
@@ -101,10 +101,10 @@ module.exports = {
     failure: test => {
       test.expect(2);
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.create('json', false)
+      menu.create('json', false)
         .catch(err => {
           test.equal(true, err instanceof Error);
           test.equal('Expected parameter body must be an Object', err.message, 'Unexpected error returned.');
@@ -119,10 +119,10 @@ module.exports = {
         Promise.resolve({data: 'deleteSuccess'})
       ));
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      node.delete(1)
+      menu.delete('mymenu')
         .then(res => {
           test.equal('deleteSuccess', res, 'Unexpected body returned.');
           test.done();
@@ -130,14 +130,13 @@ module.exports = {
     },
     failure: test => {
       test.expect(2);
+      const Menu = requireSubvert.require('../../lib/resources/menu');
+      const menu = new Menu('http://foo.dev', {user: 'a', pass: 'b'});
 
-      const Node = requireSubvert.require('../../lib/resources/node');
-      const node = new Node('http://foo.dev', {user: 'a', pass: 'b'});
-
-      node.delete(false)
+      menu.delete(false)
         .catch(err => {
           test.equal(true, err instanceof Error);
-          test.equal('Expected parameter entityId must be a number', err.message, 'Unexpected error returned.');
+          test.equal('Expected parameter menuName must be a string', err.message, 'Unexpected error returned.');
           test.done();
         });
     }

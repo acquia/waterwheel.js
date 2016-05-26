@@ -7,7 +7,7 @@ const requireSubvert = require('require-subvert')(__dirname);
 
 module.exports = {
   tearDown: cb => {
-    requireSubvert.cleanUp();
+    Object.keys(require.cache).forEach(key => {delete require.cache[key];});
     cb();
   },
   creation: test => {
@@ -18,16 +18,25 @@ module.exports = {
     test.equal(true, hydrant instanceof Hydrant, 'Unexpected creation.');
     test.done();
   },
+  createNewEntityQuery: test => {
+    test.expect(1);
+    const Hydrant = requireSubvert.require('../lib/hydrant');
+    const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
+
+    hydrant.api.query('node');
+    test.ok(true);
+    test.done();
+  },
   urlBase: test => {
     test.expect(2);
     const Hydrant = requireSubvert.require('../lib/hydrant');
     const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
 
-    test.equal('http://foo.dev', hydrant.getBase(), 'Unexpected URL base.');
+    test.equal('http://foo.dev', hydrant.api.node.getBase(), 'Unexpected URL base.');
 
-    hydrant.setBase('http://foo2.dev');
+    hydrant.api.node.setBase('http://foo2.dev');
 
-    test.equal('http://foo2.dev', hydrant.getBase(), 'URL base was not set correctly.');
+    test.equal('http://foo2.dev', hydrant.api.node.getBase(), 'URL base was not set correctly.');
     test.done();
   },
   credentials: test => {
@@ -35,11 +44,11 @@ module.exports = {
     const Hydrant = requireSubvert.require('../lib/hydrant');
     const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
 
-    test.deepEqual({user: 'a', pass: 'b'}, hydrant.getCredentials(), 'Unexpected credentials.');
+    test.deepEqual({user: 'a', pass: 'b'}, hydrant.api.node.getCredentials(), 'Unexpected credentials.');
 
-    hydrant.setCredentials({user: 'c', pass: 'd'});
+    hydrant.api.node.setCredentials({user: 'c', pass: 'd'});
 
-    test.deepEqual({user: 'c', pass: 'd'}, hydrant.getCredentials(), 'Credentials object was not set correctly.');
+    test.deepEqual({user: 'c', pass: 'd'}, hydrant.api.node.getCredentials(), 'Credentials object was not set correctly.');
     test.done();
   },
   requests: {
@@ -125,6 +134,20 @@ module.exports = {
             test.equal(err, 'bar', 'Unexpected response.');
             test.done();
           });
+      },
+      cacheCSRF: test => {
+        test.expect(1);
+
+        const Request = requireSubvert.require('../lib/helpers/request');
+        const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+
+        request.csrfToken = '1234';
+
+        request.getXCSRFToken()
+          .then(res => {
+            test.equal(res, '1234', 'Unexpected response.');
+            test.done();
+          });
       }
     },
     headers: test => {
@@ -139,12 +162,12 @@ module.exports = {
 
       request.issueRequest('GET', '/entity/1', '12345', {})
         .then(res => {
-          test.deepEqual({'X-CSRF-Token': '12345'}, res, 'Unexpected headers returned.');
+          test.deepEqual({}, res, 'Unexpected headers returned.');
         });
 
       request.issueRequest('GET', '/entity/1', '34567', {'foo': 'bar'})
         .then(res => {
-          test.deepEqual({'X-CSRF-Token': '34567', 'foo': 'bar'}, res, 'Unexpected headers set.');
+          test.deepEqual({'foo': 'bar'}, res, 'Unexpected headers set.');
           test.done();
         });
     },
@@ -152,20 +175,23 @@ module.exports = {
       test.expect(1);
 
       requireSubvert.subvert('axios', (options) => (
-        Promise.resolve({data: options})
+        Promise.resolve({data: 'foo'})
       ));
 
       const Request = requireSubvert.require('../lib/helpers/request');
       const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
 
-      request.issueRequest('POST', '/entity/1', '12345', {}, 'foo')
+      request.issueRequest('GET', '/entity/1', '12345', {})
         .then(res => {
-          test.deepEqual('foo', res.body, 'Unexpected body returned.');
+          test.deepEqual('foo', res, 'Unexpected headers returned.');
           test.done();
         });
     }
   },
   resources: {
-    node: require('./resources/node')
+    node: require('./resources/node'),
+    menu: require('./resources/menu'),
+    contentType: require('./resources/contentType'),
+    entityQuery: require('./resources/entityQuery')
   }
 };
