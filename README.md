@@ -17,8 +17,7 @@ First, ensure that you have set up cross-origin resource sharing on your Drupal 
 From a server environment,
 
 ```javascript
-const Hydrant = require('./lib/hydrant');
-
+const Hydrant = require('hydrant');
 const hydrant = new Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
 hydrant.api.node.get(1)
@@ -41,7 +40,6 @@ hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
 From the browser,
 
 ```javascript
-
 const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
 hydrant.api.node.get(1)
@@ -58,5 +56,16 @@ hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
   })
   .catch(err => {
     // err
+  });
+```
+
+Or make a bunch of requests,
+
+```javascript
+const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
+
+Promise.all([hydrant.api.contentType.get('article'), hydrant.api.contentType.get('page'), hydrant.api.node.get(1)])
+  .then(res => {
+    // res
   });
 ```
