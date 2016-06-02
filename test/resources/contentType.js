@@ -4,14 +4,14 @@ const requireSubvert = require('require-subvert')(__dirname);
 
 module.exports = {
   tearDown: cb => {
-    requireSubvert.cleanUp();
+    Object.keys(require.cache).forEach(key => {delete require.cache[key];});
     cb();
   },
   get: {
     success: test => {
       test.expect(1);
       requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
+        Promise.resolve({data: 'getSuccess'})
       ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
@@ -19,15 +19,12 @@ module.exports = {
 
       contentType.get('mycontenttype', 'json')
         .then(res => {
-          test.equal('foo', res, 'Unexpected response.');
+          test.equal('getSuccess', res, 'Unexpected response.');
           test.done();
         });
     },
     failure: test => {
       test.expect(2);
-      requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
-      ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
       const contentType = new ContentType('http://foo.dev', {user: 'a', pass: 'b'});
@@ -44,7 +41,7 @@ module.exports = {
     success: test => {
       test.expect(1);
       requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
+        Promise.resolve({data: 'setSuccess'})
       ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
@@ -52,15 +49,12 @@ module.exports = {
 
       contentType.set('mycontenttype', 'json', {foo: 'bar'})
         .then(res => {
-          test.equal('foo', res, 'Unexpected body returned.');
+          test.equal('setSuccess', res, 'Unexpected body returned.');
           test.done();
         });
     },
     failure: test => {
       test.expect(2);
-      requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
-      ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
       const contentType = new ContentType('http://foo.dev', {user: 'a', pass: 'b'});
@@ -75,7 +69,7 @@ module.exports = {
     nonObjectBody: test => {
       test.expect(1);
       requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
+        Promise.resolve({data: 'setNonObjectBody'})
       ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
@@ -83,7 +77,7 @@ module.exports = {
 
       contentType.set('mycontenttype', 'json', '')
         .then(res => {
-          test.equal('foo', res, 'Unexpected body returned.');
+          test.equal('setNonObjectBody', res, 'Unexpected body returned.');
           test.done();
         });
     }
@@ -92,7 +86,7 @@ module.exports = {
     success: test => {
       test.expect(1);
       requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
+        Promise.resolve({data: 'createSuccess'})
       ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
@@ -100,15 +94,12 @@ module.exports = {
 
       contentType.create('json', {foo: 'bar'})
         .then(res => {
-          test.equal('foo', res, 'Unexpected body returned.');
+          test.equal('createSuccess', res, 'Unexpected body returned.');
           test.done();
         });
     },
     failure: test => {
       test.expect(2);
-      requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
-      ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
       const contentType = new ContentType('http://foo.dev', {user: 'a', pass: 'b'});
@@ -125,7 +116,7 @@ module.exports = {
     success: test => {
       test.expect(1);
       requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
+        Promise.resolve({data: 'deleteSuccess'})
       ));
 
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
@@ -133,15 +124,12 @@ module.exports = {
 
       contentType.delete('mycontenttype')
         .then(res => {
-          test.equal('foo', res, 'Unexpected body returned.');
+          test.equal('deleteSuccess', res, 'Unexpected body returned.');
           test.done();
         });
     },
     failure: test => {
       test.expect(2);
-      requireSubvert.subvert('axios', () => (
-        Promise.resolve({data: 'foo'})
-      ));
       const ContentType = requireSubvert.require('../../lib/resources/contentType');
       const contentType = new ContentType('http://foo.dev', {user: 'a', pass: 'b'});
 

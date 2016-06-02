@@ -7,7 +7,7 @@ const requireSubvert = require('require-subvert')(__dirname);
 
 module.exports = {
   tearDown: cb => {
-    requireSubvert.cleanUp();
+    Object.keys(require.cache).forEach(key => {delete require.cache[key];});
     cb();
   },
   creation: test => {
@@ -16,6 +16,15 @@ module.exports = {
     const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
 
     test.equal(true, hydrant instanceof Hydrant, 'Unexpected creation.');
+    test.done();
+  },
+  createNewEntityQuery: test => {
+    test.expect(1);
+    const Hydrant = requireSubvert.require('../lib/hydrant');
+    const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
+
+    hydrant.api.query('node');
+    test.ok(true);
     test.done();
   },
   urlBase: test => {
@@ -125,6 +134,20 @@ module.exports = {
             test.equal(err, 'bar', 'Unexpected response.');
             test.done();
           });
+      },
+      cacheCSRF: test => {
+        test.expect(1);
+
+        const Request = requireSubvert.require('../lib/helpers/request');
+        const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+
+        request.csrfToken = '1234';
+
+        request.getXCSRFToken()
+          .then(res => {
+            test.equal(res, '1234', 'Unexpected response.');
+            test.done();
+          });
       }
     },
     headers: test => {
@@ -139,12 +162,12 @@ module.exports = {
 
       request.issueRequest('GET', '/entity/1', '12345', {})
         .then(res => {
-          test.deepEqual({'X-CSRF-Token': '12345'}, res, 'Unexpected headers returned.');
+          test.deepEqual({}, res, 'Unexpected headers returned.');
         });
 
       request.issueRequest('GET', '/entity/1', '34567', {'foo': 'bar'})
         .then(res => {
-          test.deepEqual({'X-CSRF-Token': '34567', 'foo': 'bar'}, res, 'Unexpected headers set.');
+          test.deepEqual({'foo': 'bar'}, res, 'Unexpected headers set.');
           test.done();
         });
     },
@@ -168,6 +191,7 @@ module.exports = {
   resources: {
     node: require('./resources/node'),
     menu: require('./resources/menu'),
-    contentType: require('./resources/contentType')
+    contentType: require('./resources/contentType'),
+    entityQuery: require('./resources/entityQuery')
   }
 };
