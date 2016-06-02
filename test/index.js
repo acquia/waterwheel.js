@@ -7,7 +7,7 @@ const requireSubvert = require('require-subvert')(__dirname);
 
 module.exports = {
   tearDown: cb => {
-    requireSubvert.cleanUp();
+    Object.keys(require.cache).forEach(key => {delete require.cache[key];});
     cb();
   },
   creation: test => {
@@ -16,6 +16,15 @@ module.exports = {
     const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
 
     test.equal(true, hydrant instanceof Hydrant, 'Unexpected creation.');
+    test.done();
+  },
+  createNewEntityQuery: test => {
+    test.expect(1);
+    const Hydrant = requireSubvert.require('../lib/hydrant');
+    const hydrant = new Hydrant('http://foo.dev', {user: 'a', pass: 'b'});
+
+    hydrant.api.query('node');
+    test.ok(true);
     test.done();
   },
   urlBase: test => {
@@ -182,6 +191,7 @@ module.exports = {
   resources: {
     node: require('./resources/node'),
     menu: require('./resources/menu'),
-    contentType: require('./resources/contentType')
+    contentType: require('./resources/contentType'),
+    entityQuery: require('./resources/entityQuery')
   }
 };
