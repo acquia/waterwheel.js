@@ -192,6 +192,7 @@ module.exports = {
     node: require('./resources/node'),
     menu: require('./resources/menu'),
     contentType: require('./resources/contentType'),
+    comment: require('./resources/comment'),
     entityQuery: require('./resources/entityQuery')
   }
 };
