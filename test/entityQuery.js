@@ -48,7 +48,7 @@ test.cb('Range', t => {
 
 });
 
-test.cb('Contion', t => {
+test.cb('Condition', t => {
   t.plan(1);
 
   const EntityQuery = requireSubvert.require('../lib/resources/entityQuery');
