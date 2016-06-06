@@ -20,7 +20,7 @@ From a server environment,
 const Hydrant = require('hydrant');
 const hydrant = new Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
-hydrant.api.node.get(1)
+hydrant.api.content.get(1)
   .then(res => {
     // res
   })
@@ -42,7 +42,7 @@ From the browser,
 ```javascript
 const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
-hydrant.api.node.get(1)
+hydrant.api.content.get(1)
   .then(res => {
     // res
   })
@@ -64,7 +64,7 @@ Or make a bunch of requests,
 ```javascript
 const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
 
-Promise.all([hydrant.api.contentType.get('article'), hydrant.api.contentType.get('page'), hydrant.api.node.get(1)])
+Promise.all([hydrant.api.contentType.get('article'), hydrant.api.contentType.get('page'), hydrant.api.content.get(1)])
   .then(res => {
     // res
   });

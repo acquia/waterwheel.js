@@ -1,6 +1,6 @@
 {
-  "name": "hydrant",
-  "version": "0.1.0",
+  "name": "drupal-hydrant",
+  "version": "0.2.0",
   "description": "A generic JavaScript helper library to query and manipulate Drupal 8 via core REST",
   "author": "Preston So <pso@post.harvard.edu>",
   "contributors": [
@@ -14,9 +14,9 @@
   "main": "lib/hydrant.js",
   "scripts": {
     "build": "./node_modules/.bin/webpack --progress",
-    "test": "istanbul cover --print summary nodeunit ./test",
-    "lint": "eslint .",
-    "coverage": "istanbul check-coverage --statements 100.00 --lines 100.00 --branches 100.00 --functions 100.00"
+    "test": "./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/ava -v",
+    "coverage": "./node_modules/.bin/nyc check-coverage",
+    "lint": "eslint ."
   },
   "keywords": [
     "drupal",
@@ -29,14 +29,14 @@
     "drupal-api": "0.0.2"
   },
   "devDependencies": {
+    "ava": "^0.15.1",
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.6.0",
     "browserify": "^13.0.0",
     "eslint": "^2.9.0",
     "expose-loader": "^0.7.1",
-    "istanbul": "^0.4.3",
-    "nodeunit": "^0.9.1",
+    "nyc": "^6.4.4",
     "require-subvert": "^0.1.0",
     "webpack": "^1.13.0"
   },
@@ -47,5 +47,17 @@
   "engines": {
     "node": "~6.0.0",
     "npm": "~3.8.6"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ]
+  },
+  "nyc": {
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100,
+    "report-dir": "./coverage"
   }
 }
