@@ -1,4 +1,4 @@
-# Whaterwheel
+# Waterwheel
 
 A generic JavaScript helper library to query and manipulate Drupal 8 via core REST
 
@@ -8,19 +8,19 @@ A generic JavaScript helper library to query and manipulate Drupal 8 via core RE
 
 * Run `npm i` to install development dependencies.
 * Run `npm t` to run tests and check coverage.
-* Run `npm run build` to create a browser version; located in `dist/whaterwheel.js`.
+* Run `npm run build` to create a browser version; located in `dist/waterwheel.js`.
 
 ## Usage
 
-First, ensure that you have set up cross-origin resource sharing on your Drupal site to enable Whaterwheel to perform necessary tasks.
+First, ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks.
 
 From a server environment,
 
 ```javascript
-const Whaterwheel = require('whaterwheel');
-const whaterwheel = new Whaterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
+const Waterwheel = require('waterwheel');
+const waterwheel = new Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
-whaterwheel.api.content.get(1)
+waterwheel.api.content.get(1)
   .then(res => {
     // res
   })
@@ -28,7 +28,7 @@ whaterwheel.api.content.get(1)
     // err
   });
 
-whaterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
+waterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
   .then(res => {
     // result would be first five nodes, where 'field_foo' is equal to 'bar'
   })
@@ -40,9 +40,9 @@ whaterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
 From the browser,
 
 ```javascript
-const whaterwheel = new window.Whaterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
+const waterwheel = new window.Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
-whaterwheel.api.content.get(1)
+waterwheel.api.content.get(1)
   .then(res => {
     // res
   })
@@ -50,7 +50,7 @@ whaterwheel.api.content.get(1)
     // err
   });
 
-whaterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
+waterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
   .then(res => {
     // result would be first five nodes, where 'field_foo' is equal to 'bar'
   })
@@ -62,9 +62,9 @@ whaterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
 Or make a bunch of requests,
 
 ```javascript
-const whaterwheel = new window.Whaterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
+const waterwheel = new window.Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
-Promise.all([whaterwheel.api.contentType.get('article'), whaterwheel.api.contentType.get('page'), whaterwheel.api.content.get(1)])
+Promise.all([waterwheel.api.contentType.get('article'), waterwheel.api.contentType.get('page'), waterwheel.api.content.get(1)])
   .then(res => {
     // res
   });
