@@ -1,5 +1,5 @@
 {
-  "name": "Waterwheel",
+  "name": "waterwheel",
   "version": "0.3.0",
   "description": "A generic JavaScript helper library to query and manipulate Drupal 8 via core REST",
   "author": "Preston So <preston.so@acquia.com>",
