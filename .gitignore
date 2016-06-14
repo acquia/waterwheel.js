@@ -1,4 +1,4 @@
 node_modules
 coverage
 .nyc_output
-dist/whaterwheel.js
+dist/waterwheel.js
