@@ -1,4 +1,4 @@
-# Hydrant
+# Whaterwheel
 
 A generic JavaScript helper library to query and manipulate Drupal 8 via core REST
 
@@ -8,19 +8,19 @@ A generic JavaScript helper library to query and manipulate Drupal 8 via core RE
 
 * Run `npm i` to install development dependencies.
 * Run `npm t` to run tests and check coverage.
-* Run `npm run build` to create a browser version; located in `dist/hydrant.js`.
+* Run `npm run build` to create a browser version; located in `dist/whaterwheel.js`.
 
 ## Usage
 
-First, ensure that you have set up cross-origin resource sharing on your Drupal site to enable Hydrant to perform necessary tasks.
+First, ensure that you have set up cross-origin resource sharing on your Drupal site to enable Whaterwheel to perform necessary tasks.
 
 From a server environment,
 
 ```javascript
-const Hydrant = require('hydrant');
-const hydrant = new Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
+const Whaterwheel = require('whaterwheel');
+const whaterwheel = new Whaterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
-hydrant.api.content.get(1)
+whaterwheel.api.content.get(1)
   .then(res => {
     // res
   })
@@ -28,7 +28,7 @@ hydrant.api.content.get(1)
     // err
   });
 
-hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
+whaterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
   .then(res => {
     // result would be first five nodes, where 'field_foo' is equal to 'bar'
   })
@@ -40,9 +40,9 @@ hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
 From the browser,
 
 ```javascript
-const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
+const whaterwheel = new window.Whaterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
-hydrant.api.content.get(1)
+whaterwheel.api.content.get(1)
   .then(res => {
     // res
   })
@@ -50,7 +50,7 @@ hydrant.api.content.get(1)
     // err
   });
 
-hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
+whaterwheel.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
   .then(res => {
     // result would be first five nodes, where 'field_foo' is equal to 'bar'
   })
@@ -62,9 +62,9 @@ hydrant.api.query('node').condition('field_foo', 'bar').range(0, 5).get()
 Or make a bunch of requests,
 
 ```javascript
-const hydrant = new window.Hydrant('http://test.dev', {username: 'admin', 'password': '1234'});
+const whaterwheel = new window.Whaterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
-Promise.all([hydrant.api.contentType.get('article'), hydrant.api.contentType.get('page'), hydrant.api.content.get(1)])
+Promise.all([whaterwheel.api.contentType.get('article'), whaterwheel.api.contentType.get('page'), whaterwheel.api.content.get(1)])
   .then(res => {
     // res
   });
