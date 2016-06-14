@@ -1,16 +1,15 @@
 /*
-                   _                 _
-   /\  /\_   _  __| |_ __ __ _ _ __ | |_
-  / /_/ / | | |/ _` | '__/ _` | '_ \| __|
- / __  /| |_| | (_| | | | (_| | | | | |_
- \/ /_/  \__, |\__,_|_|  \__,_|_| |_|\__|
-         |___/
+   __    __ _           _                     _               _
+ / / /\ \ \ |__   __ _| |_ ___ _ ____      _| |__   ___  ___| |
+ \ \/  \/ / '_ \ / _` | __/ _ \ '__\ \ /\ / / '_ \ / _ \/ _ \ |
+ \  /\  /| | | | (_| | ||  __/ |   \ V  V /| | | |  __/  __/ |
+  \/  \/ |_| |_|\__,_|\__\___|_|    \_/\_/ |_| |_|\___|\___|_|
 */
 
 /**
- * This file is only used by Webpack to handle exporting Hydrant correctly.
- * The statement below simply lets Webpack know to make window.Hydrant
+ * This file is only used by Webpack to handle exporting Whaterwheel correctly.
+ * The statement below simply lets Webpack know to make window.Whaterwheel
  * accessible when built.
  */
 
-require('expose?Hydrant!./lib/hydrant.js');
+require('expose?Whaterwheel!./lib/whaterwheel.js');

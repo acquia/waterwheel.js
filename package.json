@@ -1,8 +1,8 @@
 {
-  "name": "drupal-hydrant",
+  "name": "Waterwheel",
   "version": "0.2.0",
   "description": "A generic JavaScript helper library to query and manipulate Drupal 8 via core REST",
-  "author": "Preston So <pso@post.harvard.edu>",
+  "author": "Preston So <preston.so@acquia.com>",
   "contributors": [
     {
       "name": "Mathew Grill",
@@ -10,8 +10,8 @@
     }
   ],
   "license": "MIT",
-  "url": "https://github.com/prestonso/hydrant",
-  "main": "lib/hydrant.js",
+  "url": "https://github.com/acquia/waterwheel",
+  "main": "lib/whaterwheel.js",
   "scripts": {
     "build": "./node_modules/.bin/webpack --progress",
     "test": "./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/ava -v",
@@ -22,7 +22,8 @@
     "drupal",
     "rest",
     "api",
-    "cms"
+    "cms",
+    "waterwheel"
   ],
   "dependencies": {
     "axios": "^0.11.0",
@@ -42,7 +43,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/prestonso/hydrant.git"
+    "url": "https://github.com/acquia/waterwheel.git"
   },
   "engines": {
     "node": "~6.0.0",

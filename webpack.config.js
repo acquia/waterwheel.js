@@ -4,7 +4,7 @@ module.exports = {
   entry: './index.js',
   output: {
     path: __dirname,
-    filename: '/dist/hydrant.js'
+    filename: '/dist/whaterwheel.js'
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({

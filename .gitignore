@@ -1,4 +1,4 @@
 node_modules
 coverage
 .nyc_output
-dist/hydrant.js
+dist/whaterwheel.js
