@@ -35,9 +35,13 @@ Build a browser version.
 npm run build
 ```
 
-## Documentation
+## Dependencies
 
-Ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks. Instructions for [Apache](http://enable-cors.org/server_apache.html) or [Nginx](http://enable-cors.org/server_nginx.html). 
+Ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks. Instructions for [Apache](http://enable-cors.org/server_apache.html) or [Nginx](http://enable-cors.org/server_nginx.html).
+
+The majority of the functionality in Waterwheel is dependent on the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel). Please install and enable this module in your Drupal site before attempting to use the functionality offered in this library.
+
+## Documentation
 
 ### Require `waterwheel` in either a server or browser environment.
 
@@ -59,11 +63,22 @@ Waterwheel when instantiated accepts two arguments
 ```javascript
 waterwheel.populateResources()
   .then(res => {
-    // An array of available resources
+    /*
+    [ 'comment',
+    'file',
+    'menu',
+    'node.article',
+    'node.page',
+    'node_type.content_type',
+    'query',
+    'taxonomy_term.tags',
+    'taxonomy_vocabulary',
+    'user' ]
+     */
   });
 ```
 
-Waterwheel expects the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled. **This must be done before any subsequent api calls**.
+Waterwheel expects the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled. **This must be done before any subsequent api calls**. Without this call, only the [Entity Query](#entity-query) functionality will be available.
 
 ### Manually add resources to `waterwheel.api`
 
