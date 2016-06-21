@@ -1,6 +1,18 @@
 const test = require('ava');
 let requireSubvert = require('require-subvert')(__dirname);
 
+test.beforeEach(t => {
+  t.context.methods = {
+    'GET': '/comment/{comment}',
+    'POST': '/entity/comment',
+    'DELETE': '/comment/{comment}',
+    'PATCH': '/comment/{comment}'
+  };
+  t.context.credentials = {user: 'b', pass: 'b'};
+  t.context.base = 'http://foo.dev';
+  t.context.options = '/entity/types/node/{bundle}';
+});
+
 test.afterEach.cb(t => {
   requireSubvert.cleanUp();
   t.end();
@@ -15,7 +27,7 @@ test.cb('Get Success', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity('http://foo.dev', {user: 'b', pass: 'b'}, {get: 'node', set: 'node', create: 'entity/node', delete: 'node'});
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
   entity.get(1, 'json')
     .then(res => {
@@ -33,9 +45,9 @@ test.cb('Set Success', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity('http://foo.dev', {user: 'a', pass: 'b'}, {get: 'node', set: 'node', create: 'entity/node', delete: 'node'});
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.set(1, 'json', {foo: 'bar'})
+  entity.patch(1, 'json', {foo: 'bar'})
     .then(function (res) {
       t.is('setSuccess', res, 'Unexpected body returned.');
       t.end();
@@ -48,9 +60,9 @@ test.cb('Set Non-Object Body', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity('http://foo.dev', {user: 'a', pass: 'b'}, {get: 'node', set: 'node', create: 'entity/node', delete: 'node'});
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.set(1, 'json', '')
+  entity.patch(1, 'json', '')
     .then(res => {
       t.is('setNonObjectBody', res, 'Unexpected body returned.');
       t.end();
@@ -65,9 +77,9 @@ test.cb('Create Success', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity('http://foo.dev', {user: 'a', pass: 'b'}, {get: 'node', set: 'node', create: 'entity/node', delete: 'node'});
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.create('json', {foo: 'bar'})
+  entity.post('json', {foo: 'bar'})
     .then(res => {
       t.is('createSuccess', res, 'Unexpected body returned.');
       t.end();
@@ -82,11 +94,78 @@ test.cb('Delete Success', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity('http://foo.dev', {user: 'a', pass: 'b'}, {get: 'node', set: 'node', create: 'entity/node', delete: 'node'});
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
   entity.delete(1)
     .then(res => {
       t.is('deleteSuccess', res, 'Unexpected body returned.');
       t.end();
     });
+});
+
+test.cb('Get Field Data', t => {
+  t.plan(2);
+
+  const fieldData = {a: 'a', b: 'b', c: 'c'};
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: fieldData})
+  ));
+
+  const Entity = requireSubvert.require('../lib/entity');
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options);
+
+  entity.getFieldData()
+    .then(res => {
+      t.deepEqual(entity.metadata, fieldData, 'Metadata not correct set.');
+      t.deepEqual(res, fieldData, 'Unexpected Response.');
+      t.end();
+    });
+});
+
+test.cb('Set Field Data', t => {
+  t.plan(1);
+
+  const expectedResponse = {type: 'article', a: 'b'};
+
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: true})
+  ));
+
+  const Entity = requireSubvert.require('../lib/entity');
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options);
+
+  entity.metadata = {fields: {a: {}, b: {}, c: {}}};
+
+  entity.setField(1, 'a', 'b')
+    .then(res => {
+      t.deepEqual(res, expectedResponse, 'Unexpected Response.');
+      t.end();
+    });
+
+});
+
+test.cb('Fetch Field Data, Set Field Data', t => {
+  t.plan(1);
+
+  const expectedResponse = {type: 'article', title: 'A cool new title.'};
+
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: true})
+  ));
+
+  const Entity = requireSubvert.require('../lib/entity');
+  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options);
+
+  // Mock getFieldData.
+  entity.getFieldData = () => {
+    entity.metadata = {fields: {title: {}}};
+    return Promise.resolve();
+  };
+
+  entity.setField(1, 'title', 'A cool new title.')
+    .then(res => {
+      t.deepEqual(res, expectedResponse, 'Unexpected Response.');
+      t.end();
+    });
+
 });

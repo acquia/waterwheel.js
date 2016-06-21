@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "axios": "^0.11.0",
-    "drupal-api": "0.0.2"
+    "drupal-api": "^0.0.3"
   },
   "devDependencies": {
     "ava": "^0.15.1",
