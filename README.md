@@ -37,7 +37,7 @@ npm run build
 
 ## Documentation
 
-Ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks.
+Ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks. Instructions for [Apache](http://enable-cors.org/server_apache.html) or [Nginx](http://enable-cors.org/server_nginx.html). 
 
 ### Require `waterwheel` in either a server or browser environment.
 
