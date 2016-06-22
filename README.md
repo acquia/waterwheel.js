@@ -13,6 +13,8 @@
 
 A generic JavaScript helper library to query and manipulate Drupal 8 via core REST
 
+[![Coverage Status](https://coveralls.io/repos/github/acquia/waterwheel/badge.svg?branch=master)](https://coveralls.io/github/acquia/waterwheel?branch=master)
+
 ---
 
 ## Setup
