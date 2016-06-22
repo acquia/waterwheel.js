@@ -145,7 +145,7 @@ test.cb('Set Field Data', t => {
 });
 
 test.cb('Fetch Field Data, Set Field Data', t => {
-  t.plan(1);
+  t.plan(3);
 
   const expectedResponse = {type: 'article', title: 'A cool new title.'};
 
@@ -158,13 +158,23 @@ test.cb('Fetch Field Data, Set Field Data', t => {
 
   // Mock getFieldData.
   entity.getFieldData = () => {
-    entity.metadata = {fields: {title: {}}};
+    entity.metadata = {fields: {title: {}, email: {}}};
     return Promise.resolve();
   };
 
   entity.setField(1, 'title', 'A cool new title.')
     .then(res => {
       t.deepEqual(res, expectedResponse, 'Unexpected Response.');
+      Promise.resolve();
+    })
+    .then(() => entity.setField(1, 'email', ['a@aaa.com', 'b@bbb.com']))
+    .then(res => {
+      t.deepEqual(res, {type: 'article', email: [{value:'a@aaa.com'},{value:'b@bbb.com'}]}, 'Unexpected Response.');
+      Promise.resolve();
+    })
+    .then(() => entity.setField(1, 'title2', 'A cool new title.'))
+    .catch(err => {
+      t.deepEqual(err, 'The field, title2, is not included on, article.', 'Unexpected Response.');
       t.end();
     });
 
