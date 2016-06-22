@@ -1,0 +1,93 @@
+{
+  "comment": {
+    "label": "Comment",
+    "type": "content",
+    "methods": {
+      "GET": "/comment/{comment}",
+      "POST": "/entity/comment",
+      "DELETE": "/comment/{comment}",
+      "PATCH": "/comment/{comment}"
+    },
+    "bundles": ["comment"],
+    "more": "/entity/types/comment/{bundle}"
+  },
+  "file": {
+    "label": "File",
+    "type": "content",
+    "methods": {
+      "GET": "/entity/file/{file}",
+      "POST": "/entity/file",
+      "DELETE": "/entity/file/{file}",
+      "PATCH": "/entity/file/{file}"
+    },
+    "more": "entity/types/file/file"
+  },
+  "node": {
+    "label": "Content",
+    "type": "content",
+    "methods": {
+      "GET": "/node/{node}",
+      "POST": "/entity/node",
+      "DELETE": "/node/{node}",
+      "PATCH": "/node/{node}"
+    },
+    "bundles": ["article", "page"],
+    "more": "/entity/types/node/{bundle}"
+  },
+  "node_type": {
+    "label": "Content type",
+    "type": "config",
+    "methods": {
+      "GET": "/entity/node_type/{node_type}",
+      "POST": "/entity/node_type",
+      "DELETE": "/entity/node_type/{node_type}",
+      "PATCH": "/entity/node_type/{node_type}"
+    },
+    "more": "entity/types/node_type"
+  },
+  "menu": {
+    "label": "Menu",
+    "type": "config",
+    "methods": {
+      "GET": "/entity/menu/{menu}",
+      "POST": "/entity/menu",
+      "DELETE": "/entity/menu/{menu}",
+      "PATCH": "/entity/menu/{menu}"
+    },
+    "more": "entity/types/menu"
+  },
+  "taxonomy_term": {
+    "label": "Taxonomy term",
+    "type": "content",
+    "methods": {
+      "GET": "/taxonomy/term/{taxonomy_term}",
+      "POST": "/entity/taxonomy_term",
+      "DELETE": "/taxonomy/term/{taxonomy_term}",
+      "PATCH": "/taxonomy/term/{taxonomy_term}"
+    },
+    "bundles": ["tags"],
+    "more": "/entity/types/taxonomy_term/{bundle}"
+  },
+  "taxonomy_vocabulary": {
+    "label": "Taxonomy vocabulary",
+    "type": "config",
+    "methods": {
+      "GET": "/entity/taxonomy_vocabulary/{taxonomy_vocabulary}",
+      "POST": "/entity/taxonomy_vocabulary",
+      "DELETE": "/entity/taxonomy_vocabulary/{taxonomy_vocabulary}",
+      "PATCH": "/entity/taxonomy_vocabulary/{taxonomy_vocabulary}"
+    },
+    "more": "entity/types/taxonomy_vocabulary"
+  },
+  "user": {
+    "label": "User",
+    "type": "content",
+    "methods": {
+      "GET": "/user/{user}",
+      "POST": "/entity/user",
+      "DELETE": "/user/{user}",
+      "PATCH": "/user/{user}"
+    },
+    "more": "entity/types/user/user"
+  }
+}
