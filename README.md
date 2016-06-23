@@ -60,7 +60,9 @@ Waterwheel when instantiated accepts two arguments
   - `base`: The base path for your Drupal instance. All request paths will be built from this base
   - `credentials`: An object containing the `username` and `password` used to authenticate with Drupal.
 
-### Populate `waterwheel.api`
+### Populate `waterwheel` resources
+
+**This must be done before any subsequent API calls**. Without this call, only the [Entity Query](#entity-query) functionality will be available.
 
 ```javascript
 waterwheel.populateResources()
@@ -80,9 +82,9 @@ waterwheel.populateResources()
   });
 ```
 
-Waterwheel expects the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled. **This must be done before any subsequent api calls**. Without this call, only the [Entity Query](#entity-query) functionality will be available.
+Waterwheel currently expects the [Waterwheel Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled, however, the intent is to remove that dependency, by adding the necessary functionality to Drupal core, making that separate module ​_obsolete_​.
 
-### Manually add resources to `waterwheel.api`
+### Manually add resources to `waterwheel`
 
 ```javascript
 waterwheel.addResources(
@@ -90,7 +92,7 @@ waterwheel.addResources(
     base: {{ base url }},
     credentials: {{ credentials }},
     methods: {{ methods }},
-    entity: 'node',
+    entityType: 'node',
     bundle: 'page',
     options: {{ extended information path }}
   }}
@@ -101,8 +103,8 @@ When adding resources the parent object key will be used to identify the new res
   - `base`: The base path for your Drupal instance. All request for this resource will use this path. This can be different from the path used when instantiating `waterwheel`.
   - `credentials`: An object containing the `username` and `password` used to authenticate with Drupal. This can be different from the credentials used when instantiating `waterwheel`.
   - `methods`: An object containing the following keys, `GET`, `POST`, `PATCH`, `DELETE`. Each key should contain the path suffix that the action can be preformed on.
-  - `entity`: The entity that this resource should reference, ie. `node`.
-  - `options`: The bundle that this resource should reference, ie. `page`.
+  - `entityType`: The entity type that this resource should reference, ie. `node`.
+  - `bundle`: The bundle that this resource should reference, ie. `page`.
   - `options`: The path used to get extended (field) information about the `bundle`. This is usually provided automatically by Waterwheel-Drupal, but can be manually specified.
 
 ### Get resources within `waterwheel`
@@ -142,8 +144,8 @@ waterwheel.api.user.get(1)
   });
 ```
 `.get()` accepts two arguments
-  - `token`: The token of the entity you are requesting, `nid`.
-  - `type`: The type of response you are requesting. Currently this is optional, and internally defaults to `JSON`.
+  - `identifier`: The identifier of the entity you are requesting, `nid`, `vid`, `uid`, etc.
+  - `format`: The format of response you are requesting. Currently this is optional, and internally defaults to `JSON`.
 
 #### `PATCH`
 
@@ -156,10 +158,10 @@ waterwheel.api.user.patch(1, {})
     // err
   });
 ```
-`.patch()` accepts two arguments
-  - `token`: The token for the entity you are attempting to modify, `nid`.
+`.patch()` accepts three arguments
+  - `identifier`: The identifier for the entity you are attempting to modify, `nid`, `vid`, `uid`, etc.
   - `body`: An object that formatted in a way that Drupal will be able to parse. This object is passed directly to Drupal.
-  - `type`: The format of the object you are passing. Currently this is optional, and internally defaults to `JSON`.
+  - `format`: The format of the object you are passing. Currently this is optional, and internally defaults to `JSON`.
 
 #### `POST`
 
@@ -174,7 +176,7 @@ waterwheel.api.user.post({})
 ```
 `.patch()` accepts two arguments
   - `body`: An object that formatted in a way that Drupal will be able to parse. This object should contain all the information needed to create an entity. This object is passed directly to Drupal.
-  - `type`: The format of the object you are passing. Currently this is optional, and internally defaults to `application/json`.
+  - `format`: The format of the object you are passing. Currently this is optional, and internally defaults to `application/json`.
 
 #### `DELETE`
 
@@ -188,7 +190,7 @@ waterwheel.api.user.delete(1)
   });
 ```
 `.delete()` accepts one argument
-  - `token`: The token for the entity you are attempting to delete, `nid`.
+  - `identifier`: The identifier for the entity you are attempting to delete, `nid`, `vid`, `uid`, etc.
 
 ### Set field values
 
@@ -204,7 +206,7 @@ waterwheel.populateResources()
 ```
 
 `.setField()` accepts 3 arguments
-  - `nid`: The id of the entity you are setting field values on
+  - `identifier`: The id of the entity you are setting field values on
   - `fieldName`: The name of the field you are attempting to set the value of.
   - `fieldValue`: The value of the field. Either a string of a single value, or an array for multi-value.
 

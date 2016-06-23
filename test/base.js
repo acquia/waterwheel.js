@@ -73,7 +73,7 @@ test('Add Resources', t => {
       base: t.context.base,
       credentials: t.context.credentials,
       methods: t.context.methods,
-      entity: 'comment',
+      entityType: 'comment',
       bundle: 'comment',
       options: t.context.options
     },
@@ -81,7 +81,7 @@ test('Add Resources', t => {
       base: false,
       credentials: null,
       methods: t.context.methods,
-      entity: 'comment',
+      entityType: 'comment',
       bundle: 'comment',
       options: t.context.options
     }}
