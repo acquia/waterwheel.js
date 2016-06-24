@@ -125,7 +125,7 @@ test.cb('Get Field Data', t => {
 test.cb('Set Field Data', t => {
   t.plan(1);
 
-  const expectedResponse = {type: 'article', a: 'b'};
+  const expectedResponse = {type: 'article', a: [{value: 'b'}]};
 
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: true})
@@ -136,7 +136,7 @@ test.cb('Set Field Data', t => {
 
   entity.metadata = {fields: {a: {}, b: {}, c: {}}};
 
-  entity.setField(1, 'a', 'b')
+  entity.setField(1, {a: 'b'})
     .then(res => {
       t.deepEqual(res, expectedResponse, 'Unexpected Response.');
       t.end();
@@ -145,9 +145,9 @@ test.cb('Set Field Data', t => {
 });
 
 test.cb('Fetch Field Data, Set Field Data', t => {
-  t.plan(3);
+  t.plan(5);
 
-  const expectedResponse = {type: 'article', title: 'A cool new title.'};
+  const expectedResponse = {type: 'article', title:[{value: 'A cool new title.'}]};
 
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: true})
@@ -158,23 +158,40 @@ test.cb('Fetch Field Data, Set Field Data', t => {
 
   // Mock getFieldData.
   entity.getFieldData = () => {
-    entity.metadata = {fields: {title: {}, email: {}}};
+    entity.metadata = {fields: {title: {}, email: {}, body: {}}};
     return Promise.resolve();
   };
 
-  entity.setField(1, 'title', 'A cool new title.')
+  entity.setField(1, [{title: 'A cool new title.'}])
     .then(res => {
       t.deepEqual(res, expectedResponse, 'Unexpected Response.');
       Promise.resolve();
     })
-    .then(() => entity.setField(1, 'email', ['a@aaa.com', 'b@bbb.com']))
+    .then(() => entity.setField(1, {email: ['a@aaa.com', 'b@bbb.com']}))
     .then(res => {
       t.deepEqual(res, {type: 'article', email: [{value:'a@aaa.com'},{value:'b@bbb.com'}]}, 'Unexpected Response.');
       Promise.resolve();
     })
-    .then(() => entity.setField(1, 'title2', 'A cool new title.'))
+    .then(() => entity.setField(1, [
+      {title: 'A cool new title.'},
+      {email: ['a@aaa.com', 'b@bbb.com']}
+    ], {body: [{value: 'aaa'}]}))
+    .then(res => {
+      t.deepEqual(res, {
+        type: 'article',
+        title: [{value: 'A cool new title.'}],
+        email: [{value: 'a@aaa.com'}, {value: 'b@bbb.com'}],
+        body: [{value: 'aaa'}]
+      }, 'Unexpected Response.');
+      Promise.resolve();
+    })
+    .then(() => Promise.all([
+      entity.setField(1, [{aaa: 'A cool new title.'}]),
+      entity.setField(1, [{bbb: 'A cool new title.'}, {ccc: 'A cool new title.'}])
+    ]))
     .catch(err => {
-      t.deepEqual(err, 'The field, title2, is not included on, article.', 'Unexpected Response.');
+      t.truthy(err instanceof Error, 'Unexpected Response.');
+      t.is(err.message, 'The field, aaa, is not included within the bundle, article.', 'Unexpected Error Message.');
       t.end();
     });
 

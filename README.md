@@ -196,7 +196,15 @@ waterwheel.api.user.delete(1)
 
 ```javascript
 waterwheel.populateResources()
-  .then(() => waterwheel.api.node.page.setField(1, 'title', 'my favorite title'))
+  .then(() => waterwheel.api.node.page.setField(1, {title: 'my favorite title'})) // Set a single value
+  .then(() => waterwheel.api.node.page.setField(1, [ // Set multiple values
+    {title: 'my favorite title'},
+    {email: ['a@aaa.com', 'b@bbb.com', 'c@ccc.com']}
+  ]))
+  .then(() => waterwheel.api.node.page.setField(1, [ // Pass additional message body data.
+    {title: 'my favorite title'},
+    {email: ['a@aaa.com', 'b@bbb.com', 'c@ccc.com']}
+  ], {body: [{value: 'foo'}]} ))
   .then(res => {
     // Data sent to Drupal
   })
@@ -207,8 +215,10 @@ waterwheel.populateResources()
 
 `.setField()` accepts 3 arguments
   - `identifier`: The id of the entity you are setting field values on
-  - `fieldName`: The name of the field you are attempting to set the value of.
-  - `fieldValue`: The value of the field. Either a string of a single value, or an array for multi-value.
+  - `fields`: Fields and values to be set on the entity.
+    - A single object can be passed, `{title: 'my favorite title'}`
+    - An array of objects can be passed, `[{title: 'my favorite title'}, {subtitle: 'my favorite sub title'}]`
+  - `additionalValues`: An object of fields (the objects keys), and values that are copied to the body data prior to the `PATCH` request. **Be aware that this happens last and could overwrite any previously set fields.**
 
 ### Get field metadata for an entity/bundle
 
