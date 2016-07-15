@@ -38,6 +38,7 @@
     "coveralls": "^2.11.9",
     "eslint": "^2.9.0",
     "expose-loader": "^0.7.1",
+    "nightmare": "^2.5.2",
     "nyc": "^6.4.4",
     "require-subvert": "^0.1.0",
     "webpack": "^1.13.0"
