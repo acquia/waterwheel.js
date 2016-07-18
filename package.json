@@ -13,9 +13,9 @@
   "url": "https://github.com/acquia/waterwheel",
   "main": "lib/waterwheel.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --progress",
-    "test": "./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/ava -v && ./node_modules/.bin/nyc report",
-    "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
+    "build": "webpack --progress",
+    "test": "nyc --reporter=html ava -v && nyc report",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint ."
   },
   "keywords": [
