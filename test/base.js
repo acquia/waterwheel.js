@@ -26,6 +26,20 @@ test('Waterwheel Creation', t => {
   t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
+test('Waterwheel Creation - Missing informations', t => {
+  t.plan(3);
+
+  t.throws(() => new t.context.Waterwheel(null, null), 'Missing base path.');
+  t.throws(() => new t.context.Waterwheel(null, null, {}), 'Missing base path.');
+  t.throws(() => new t.context.Waterwheel('http://foo.dev', null), 'Missing credentials.');
+});
+
+test('Waterwheel Creation - Create with resources', t => {
+  t.plan(1);
+  const waterwheel = new t.context.Waterwheel('http://foo.dev', null, entityTypes);
+  t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
+});
+
 test('Create New Entity Query', t => {
   t.plan(1);
   const Query = requireSubvert.require('../lib/resources/entityQuery');
