@@ -55,7 +55,6 @@ const waterwheel = new Waterwheel('http://test.dev', {username: 'admin', 'passwo
 // Browser
 import '../../path/to/node_modules/waterwheel/dist/waterwheel.js'
 const waterwheel = new window.Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
-// Or use Webpack's ProvidePlugin to expose Waterwheel globally.
 ```
 
 Waterwheel when instantiated accepts two arguments
