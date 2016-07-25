@@ -1,6 +1,6 @@
 {
   "name": "waterwheel",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A generic JavaScript helper library to query and manipulate Drupal 8 via core REST",
   "author": "Preston So <preston.so@acquia.com>",
   "contributors": [
@@ -16,7 +16,8 @@
     "build": "webpack --progress",
     "test": "nyc --reporter=html ava -v && nyc report",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "drupal",
