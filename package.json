@@ -16,7 +16,8 @@
     "build": "webpack --progress",
     "test": "nyc --reporter=html ava -v && nyc report",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "drupal",
