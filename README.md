@@ -53,12 +53,19 @@ const Waterwheel = require('waterwheel');
 const waterwheel = new Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
 
 // Browser
+import '../../path/to/node_modules/waterwheel/dist/waterwheel.js'
 const waterwheel = new window.Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
+
+// With resources
+const waterwheel = new Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'}, require('./resources.json'));
 ```
 
-Waterwheel when instantiated accepts two arguments
+Waterwheel when instantiated accepts three arguments,
   - `base`: The base path for your Drupal instance. All request paths will be built from this base
   - `credentials`: An object containing the `username` and `password` used to authenticate with Drupal.
+  - `resources`: A JSON object that represents the resources available to `waterwheel`.
+
+  Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`. Additionally if a valid `resources` object is passed, `credentials` become optional when `waterwheel` is instantiated.
 
 ### Populate `waterwheel` resources
 
@@ -174,7 +181,7 @@ waterwheel.api.user.post({})
     // err
   });
 ```
-`.patch()` accepts two arguments
+`.post()` accepts two arguments
   - `body`: An object that formatted in a way that Drupal will be able to parse. This object should contain all the information needed to create an entity. This object is passed directly to Drupal.
   - `format`: The format of the object you are passing. Currently this is optional, and internally defaults to `application/json`.
 
