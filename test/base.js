@@ -158,3 +158,33 @@ test.cb('Populate Resources', t => {
       t.end();
     });
 });
+
+test('Fetch Embedded - Missing _embedded key', t => {
+  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  return waterwheel.fetchEmbedded({})
+    .catch(err =>{
+      t.is(err, 'This is probably not HAL+JSON');
+    });
+});
+
+test('Fetch Embedded - Missing response', t => {
+  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  return waterwheel.fetchEmbedded()
+    .catch(err =>{
+      t.is(err, 'This is probably not HAL+JSON');
+    });
+});
+
+test('Fetch Embedded', t => {
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: {halExample: 'Some HAL+JSON'}})
+  ));
+
+  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const halJSON = require('./sample/hal.example.json');
+  return waterwheel.fetchEmbedded(halJSON)
+    .then(res =>{
+      t.is(res.length, 4);
+      t.deepEqual(res[1], {halExample: 'Some HAL+JSON'});
+    });
+});
