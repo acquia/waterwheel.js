@@ -242,6 +242,23 @@ waterwheel.populateResources()
 
 `.getFieldData()` accepts no arguments. This returns the object from Waterwheel-Drupal that contains information about each field in the entity/bundle. For a list of fields, _to be used in `.setField()`_, something like `Object.keys(res.fields)` will work.
 
+### Get Embedded Resources
+
+```javascript
+waterwheel.api.node.page.get(1, 'hal_json')
+  .then(res => waterwheel.fetchEmbedded(res))
+  .then(res => {
+    // res
+  })
+  .catch(err => {
+    // err
+  });
+```
+`.fetchEmbedded()` accepts 1 argument
+  - `entityJSON`: This should be a HAL+JSON structured object containing an `_embedded` key at the root.
+
+When requesting embedded resources duplicates are removed to prevent extra HTTP requests. An array is returned with your original response and any embedded resources. If any of the subsequent requests fail, the promise is rejected. 
+
 ### Entity Query
 
 To take advantage of the Entity Query support, enable the [EntityQueryAPI](https://www.drupal.org/project/entityqueryapi) module. You do not need to run `.populateResources()` prior to using this functionality.
