@@ -253,11 +253,21 @@ waterwheel.api.node.page.get(1, 'hal_json')
   .catch(err => {
     // err
   });
-```
-`.fetchEmbedded()` accepts 1 argument
-  - `entityJSON`: This should be a HAL+JSON structured object containing an `_embedded` key at the root.
 
-When requesting embedded resources duplicates are removed to prevent extra HTTP requests. An array is returned with your original response and any embedded resources. If any of the subsequent requests fail, the promise is rejected. 
+waterwheel.api.node.page.get(1, 'hal_json')
+  .then(res => waterwheel.fetchEmbedded(res, ['my_field']))
+  .then(res => {
+    // res
+  })
+  .catch(err => {
+    // err
+  });
+```
+`.fetchEmbedded()` accepts 2 arguments
+  - `entityJSON`: This should be a HAL+JSON structured object containing an `_embedded` key at the root.
+  - `includedFields`: Optionally provide a single field as a `string`, or an `array` of `strings` to filter the embedded request by.
+
+When requesting embedded resources duplicates are removed to prevent extra HTTP requests. An array is returned with your original response and any embedded resources. If any of the subsequent requests fail, the promise is rejected.
 
 ### Entity Query
 

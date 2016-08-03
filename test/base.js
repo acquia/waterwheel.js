@@ -188,3 +188,31 @@ test('Fetch Embedded', t => {
       t.deepEqual(res[1], {halExample: 'Some HAL+JSON'});
     });
 });
+
+test('Fetch Embedded - Single Field', t => {
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: {halExample: 'Some HAL+JSON'}})
+  ));
+
+  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const halJSON = require('./sample/hal.example.json');
+  return waterwheel.fetchEmbedded(halJSON, 'field_actor')
+    .then(res =>{
+      t.is(res.length, 3);
+      t.deepEqual(res[1], {halExample: 'Some HAL+JSON'});
+    });
+});
+
+test('Fetch Embedded - Multiple Fields', t => {
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: {halExample: 'Some HAL+JSON'}})
+  ));
+
+  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const halJSON = require('./sample/hal.example.json');
+  return waterwheel.fetchEmbedded(halJSON, ['field_actor', 'revision_uid'])
+    .then(res =>{
+      t.is(res.length, 4);
+      t.deepEqual(res[1], {halExample: 'Some HAL+JSON'});
+    });
+});
