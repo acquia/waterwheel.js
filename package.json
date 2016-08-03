@@ -17,7 +17,7 @@
     "test": "nyc --reporter=html ava -v && nyc report",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
-    "postinstall": "npm run build"
+    "prepublish": "npm run build"
   },
   "keywords": [
     "drupal",
