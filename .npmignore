@@ -1,0 +1,4 @@
+node_modules
+coverage
+.nyc_output
+test/server/js/waterwheel.js
