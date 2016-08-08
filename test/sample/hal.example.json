@@ -1,0 +1,141 @@
+{
+  "_links": {
+    "self": {
+      "href": "http://foo.dev/page/bruce-wayne?_format=hal_json"
+    },
+    "type": {
+      "href": "http://foo.dev/rest/type/node/page"
+    },
+    "http://foo.dev/rest/relation/node/page/uid": [{
+      "href": "http://foo.dev/user/1?_format=hal_json",
+      "lang": "en"
+    }],
+    "http://foo.dev/rest/relation/node/page/revision_uid": [{
+      "href": "http://foo.dev/user/1?_format=hal_json"
+    }],
+    "http://foo.dev/rest/relation/node/page/field_actor": [{
+      "href": "http://foo.dev/node/6?_format=hal_json"
+    }, {
+      "href": "http://foo.dev/node/8?_format=hal_json"
+    }]
+  },
+  "nid": [{
+    "value": "7"
+  }],
+  "uuid": [{
+    "value": "284365c0-fa63-43ac-ae68-d60600873c34"
+  }],
+  "vid": [{
+    "value": "7"
+  }],
+  "langcode": [{
+    "value": "en",
+    "lang": "en"
+  }],
+  "type": [{
+    "target_id": "page"
+  }],
+  "title": [{
+    "value": "Bruce  Wayne",
+    "lang": "en"
+  }],
+  "_embedded": {
+    "http://foo.dev/rest/relation/node/page/uid": [{
+      "_links": {
+        "self": {
+          "href": "http://foo.dev/user/1?_format=hal_json"
+        },
+        "type": {
+          "href": "http://foo.dev/rest/type/user/user"
+        }
+      },
+      "uuid": [{
+        "value": "b578592a-a751-4993-9060-53f488597e59"
+      }],
+      "lang": "en"
+    }],
+    "http://foo.dev/rest/relation/node/page/revision_uid": [{
+      "_links": {
+        "self": {
+          "href": "http://foo.dev/user/1?_format=hal_json"
+        },
+        "type": {
+          "href": "http://foo.dev/rest/type/user/user"
+        }
+      },
+      "uuid": [{
+        "value": "b578592a-a751-4993-9060-53f488597e59"
+      }]
+    }],
+    "http://foo.dev/rest/relation/node/page/field_actor": [{
+      "_links": {
+        "self": {
+          "href": "http://foo.dev/node/6?_format=hal_json"
+        },
+        "type": {
+          "href": "http://foo.dev/rest/type/node/actor"
+        }
+      },
+      "uuid": [{
+        "value": "b5c619cd-1dfe-4c9d-afea-760a8eaf27c9"
+      }]
+    }, {
+      "_links": {
+        "self": {
+          "href": "http://foo.dev/node/8?_format=hal_json"
+        },
+        "type": {
+          "href": "http://foo.dev/rest/type/node/actor"
+        }
+      },
+      "uuid": [{
+        "value": "ac1ad040-c05c-45ac-82d7-5b3eda40e451"
+      }]
+    }]
+  },
+  "status": [{
+    "value": "1",
+    "lang": "en"
+  }],
+  "created": [{
+    "value": "1470156620",
+    "lang": "en"
+  }],
+  "changed": [{
+    "value": "1470170146",
+    "lang": "en"
+  }],
+  "promote": [{
+    "value": "0"
+  }],
+  "sticky": [{
+    "value": "0",
+    "lang": "en"
+  }],
+  "revision_timestamp": [{
+    "value": "1470156635"
+  }],
+  "revision_translation_affected": [{
+    "value": "1",
+    "lang": "en"
+  }],
+  "default_langcode": [{
+    "value": "1",
+    "lang": "en"
+  }],
+  "body": [{
+    "value": "some body",
+    "format": "basic_html",
+    "summary": "",
+    "lang": "en"
+  }],
+  "comment": [{
+    "status": "2",
+    "cid": "0",
+    "last_comment_timestamp": "1470156635",
+    "last_comment_name": null,
+    "last_comment_uid": "1",
+    "comment_count": "0",
+    "lang": "en"
+  }]
+}
