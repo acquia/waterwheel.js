@@ -1,6 +1,6 @@
 {
   "name": "waterwheel",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A generic JavaScript helper library to query and manipulate Drupal 8 via core REST",
   "author": "Preston So <preston.so@acquia.com>",
   "contributors": [
@@ -26,8 +26,7 @@
     "waterwheel"
   ],
   "dependencies": {
-    "axios": "^0.11.0",
-    "drupal-api": "^0.0.3"
+    "axios": "^0.11.0"
   },
   "devDependencies": {
     "ava": "^0.15.1",

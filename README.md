@@ -259,19 +259,3 @@ waterwheel.api.node.page.get(1, 'hal_json')
   - `includedFields`: Optionally provide a single field as a `string`, or an `array` of `strings` to filter the embedded request by.
 
 When requesting embedded resources duplicates are removed to prevent extra HTTP requests. An array is returned with your original response and any embedded resources. If any of the subsequent requests fail, the promise is rejected.
-
-### Entity Query
-
-To take advantage of the Entity Query support, enable the [EntityQueryAPI](https://www.drupal.org/project/entityqueryapi) module. You do not need to run `.populateResources()` prior to using this functionality.
-
-```javascript
-waterwheel.api.query('node').range(0, 5).get()
-  .then(res => {
-    // res
-  })
-  .catch(err => {
-    // err
-  })
-```
-
-Additional documentation can be found at the [DAPI repository](https://github.com/gabesullice/dapi.js).

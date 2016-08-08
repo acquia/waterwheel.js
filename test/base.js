@@ -40,17 +40,6 @@ test('Waterwheel Creation - Create with resources', t => {
   t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
-test('Create New Entity Query', t => {
-  t.plan(1);
-  const Query = requireSubvert.require('../lib/resources/entityQuery');
-  const Waterwheel = requireSubvert.require('../lib/waterwheel');
-  const waterwheel = new Waterwheel(t.context.base, t.context.credentials);
-
-  waterwheel.api.query('node');
-
-  t.is(true, waterwheel.api.query instanceof Function ,'Unexpected creation.');
-});
-
 test('Get URL Base', t => {
   t.plan(2);
   const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
@@ -102,7 +91,7 @@ test('Add Resources', t => {
   );
 
   t.truthy(waterwheel.addResources() instanceof Error, 'Error not returned.');
-  t.deepEqual(waterwheel.getAvailableResources(), ['article', 'comment', 'query'], 'Entity not added correctly.');
+  t.deepEqual(waterwheel.getAvailableResources(), ['article', 'comment'], 'Entity not added correctly.');
 });
 
 test('getAvailableResources',t => {
@@ -114,7 +103,7 @@ test('getAvailableResources',t => {
     article: new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options),
     page: new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'page', t.context.options)
   };
-  t.deepEqual(waterwheel.getAvailableResources(), ['node.article', 'node.page', 'query'], 'Entity not added correctly.');
+  t.deepEqual(waterwheel.getAvailableResources(), ['node.article', 'node.page'], 'Entity not added correctly.');
 });
 
 test.cb('Fetch Resources', t => {
@@ -149,7 +138,6 @@ test.cb('Populate Resources', t => {
           'node.article',
           'node.page',
           'node_type.content_type',
-          'query',
           'taxonomy_term.tags',
           'taxonomy_vocabulary',
           'user'
