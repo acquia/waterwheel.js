@@ -1,13 +1,4 @@
-```
- __      __            __                               __                     ___      
-/\ \  __/\ \          /\ \__                           /\ \                   /\_ \     
-\ \ \/\ \ \ \     __  \ \ ,_\    __   _ __   __  __  __\ \ \___      __     __\//\ \    
- \ \ \ \ \ \ \  /'__`\ \ \ \/  /'__`\/\`'__\/\ \/\ \/\ \\ \  _ `\  /'__`\ /'__`\\ \ \   
-  \ \ \_/ \_\ \/\ \L\.\_\ \ \_/\  __/\ \ \/ \ \ \_/ \_/ \\ \ \ \ \/\  __//\  __/ \_\ \_
-   \ `\___x___/\ \__/.\_\\ \__\ \____\\ \_\  \ \___x___/' \ \_\ \_\ \____\ \____\/\____\
-    '\/__//__/  \/__/\/_/ \/__/\/____/ \/_/   \/__//__/    \/_/\/_/\/____/\/____/\/____/
-
-```
+![Waterwheel - Drupal SDK](https://raw.githubusercontent.com/acquia/waterwheel-js/assets/waterwheel.png)
 
 # Waterwheel
 
@@ -242,18 +233,29 @@ waterwheel.populateResources()
 
 `.getFieldData()` accepts no arguments. This returns the object from Waterwheel-Drupal that contains information about each field in the entity/bundle. For a list of fields, _to be used in `.setField()`_, something like `Object.keys(res.fields)` will work.
 
-### Entity Query
-
-To take advantage of the Entity Query support, enable the [EntityQueryAPI](https://www.drupal.org/project/entityqueryapi) module. You do not need to run `.populateResources()` prior to using this functionality.
+### Get Embedded Resources
 
 ```javascript
-waterwheel.api.query('node').range(0, 5).get()
+waterwheel.api.node.page.get(1, 'hal_json')
+  .then(res => waterwheel.fetchEmbedded(res))
   .then(res => {
     // res
   })
   .catch(err => {
     // err
-  })
-```
+  });
 
-Additional documentation can be found at the [DAPI repository](https://github.com/gabesullice/dapi.js).
+waterwheel.api.node.page.get(1, 'hal_json')
+  .then(res => waterwheel.fetchEmbedded(res, ['my_field']))
+  .then(res => {
+    // res
+  })
+  .catch(err => {
+    // err
+  });
+```
+`.fetchEmbedded()` accepts 2 arguments
+  - `entityJSON`: This should be a HAL+JSON structured object containing an `_embedded` key at the root.
+  - `includedFields`: Optionally provide a single field as a `string`, or an `array` of `strings` to filter the embedded request by.
+
+When requesting embedded resources duplicates are removed to prevent extra HTTP requests. An array is returned with your original response and any embedded resources. If any of the subsequent requests fail, the promise is rejected.

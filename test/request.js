@@ -29,7 +29,14 @@ test.cb('Request Failure', t => {
   t.plan(3);
 
   requireSubvert.subvert('axios', () => (
-    Promise.reject({data: {message: 'bar'}, status: 404})
+    Promise.reject({
+      response: {
+        data: {
+          message: 'bar'
+        },
+        status: 404
+      }
+    })
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
@@ -40,6 +47,29 @@ test.cb('Request Failure', t => {
       t.is(true, err instanceof Error, 'Unxpected response.');
       t.is(404, err.status, 'Unxpected response.');
       t.is('bar', err.message, 'Unxpected response.');
+      t.end();
+    });
+});
+test.cb('Request Failure - No message', t => {
+  t.plan(3);
+
+  requireSubvert.subvert('axios', () => (
+    Promise.reject({
+      response: {
+        data: {},
+        status: 404
+      }
+    })
+  ));
+
+  const Request = requireSubvert.require('../lib/helpers/request');
+  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+
+  request.issueRequest('GET', '/entity/1', '12345')
+    .catch(err => {
+      t.is(true, err instanceof Error, 'Unxpected response.');
+      t.is(404, err.status, 'Unxpected response.');
+      t.is('Unknown error.', err.message, 'Unxpected response.');
       t.end();
     });
 });
