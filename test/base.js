@@ -10,7 +10,7 @@ test.beforeEach(t => {
     'DELETE': '/comment/{comment}',
     'PATCH': '/comment/{comment}'
   };
-  t.context.credentials = {user: 'b', pass: 'b'};
+  t.context.credentials = {oauth: '123456'};
   t.context.base = 'http://foo.dev';
   t.context.options = '/entity/types/comment/{bundle}';
 });
@@ -29,14 +29,14 @@ test('Waterwheel Creation', t => {
 test('Waterwheel Creation - Missing informations', t => {
   t.plan(3);
 
-  t.throws(() => new t.context.Waterwheel(null, null), 'Missing base path.');
-  t.throws(() => new t.context.Waterwheel(null, null, {}), 'Missing base path.');
-  t.throws(() => new t.context.Waterwheel('http://foo.dev', null), 'Missing credentials.');
+  t.throws(() => new t.context.Waterwheel(null, {oauth: '12345'}), 'Missing base path.');
+  t.throws(() => new t.context.Waterwheel(null, {oauth: '12345'}, {}), 'Missing base path.');
+  t.throws(() => new t.context.Waterwheel('http://foo.dev', {foo: 'bar'}, {}), 'Incorrect authentication method.');
 });
 
 test('Waterwheel Creation - Create with resources', t => {
   t.plan(1);
-  const waterwheel = new t.context.Waterwheel('http://foo.dev', null, entityTypes);
+  const waterwheel = new t.context.Waterwheel('http://foo.dev', {oauth: '123456'}, entityTypes);
   t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
@@ -59,12 +59,24 @@ test('Get Credentials', t => {
   const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
 
   const Entity = requireSubvert.require('../lib/entity');
-  waterwheel.api.content = new Entity(t.context.base, t.context.credentials, t.context.methods,'', '', t.context.options);
+  waterwheel.api.fakeEntity = new Entity(t.context.base, t.context.credentials, t.context.methods,'', '', t.context.options);
 
-  t.deepEqual({user: 'b', pass: 'b'}, waterwheel.api.content.getCredentials(), 'Unexpected credentials.');
+  t.deepEqual(t.context.credentials, waterwheel.api.fakeEntity.getCredentials(), 'Unexpected credentials.');
 
-  waterwheel.api.content.setCredentials({user: 'c', pass: 'd'});
-  t.deepEqual({user: 'c', pass: 'd'}, waterwheel.api.content.getCredentials(), 'Credentials object was not set correctly.');
+  waterwheel.api.fakeEntity.setCredentials({oauth: '987654321'});
+  t.deepEqual({oauth: '987654321'}, waterwheel.api.fakeEntity.getCredentials(), 'Credentials object was not set correctly.');
+
+  waterwheel.api.fakeEntity.setCredentials({oauth: '987654321'});
+});
+
+test('Set Bad Credentials', t => {
+  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+
+  const Entity = requireSubvert.require('../lib/entity');
+  waterwheel.api.fakeEntity = new Entity(t.context.base, t.context.credentials, t.context.methods,'', '', t.context.options);
+
+  waterwheel.api.fakeEntity.setCredentials({oauth: '987654321'});
+  t.throws(() => waterwheel.api.fakeEntity.setCredentials({foo: 'bar'}), 'Incorrect authentication method.');
 });
 
 test('Add Resources', t => {

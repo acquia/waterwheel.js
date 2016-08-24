@@ -41,26 +41,26 @@ The majority of the functionality in Waterwheel is dependent on the [Waterwheel-
 ```javascript
 // Server
 const Waterwheel = require('waterwheel');
-const waterwheel = new Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
+const waterwheel = new Waterwheel('http://test.dev', {oauth: '12345'});
 
 // Browser
 import '../../path/to/node_modules/waterwheel/dist/waterwheel.js'
-const waterwheel = new window.Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'});
+const waterwheel = new window.Waterwheel('http://test.dev', {oauth: '12345'});
 
 // With resources
-const waterwheel = new Waterwheel('http://test.dev', {username: 'admin', 'password': '1234'}, require('./resources.json'));
+const waterwheel = new Waterwheel('http://test.dev', {oauth: '12345'}, require('./resources.json'));
 ```
 
-Waterwheel when instantiated accepts three arguments,
+Waterwheel when instantiated accepts 3 arguments,
   - `base`: The base path for your Drupal instance. All request paths will be built from this base
-  - `credentials`: An object containing the `username` and `password` used to authenticate with Drupal.
+  - `credentials`: An object containing the OAuth Bearer token used to authenticate with Drupal. Currently Waterwheel requires a token for all requests. The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
 
   Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`. Additionally if a valid `resources` object is passed, `credentials` become optional when `waterwheel` is instantiated.
 
 ### Populate `waterwheel` resources
 
-**This must be done before any subsequent API calls**. Without this call, only the [Entity Query](#entity-query) functionality will be available.
+If you are supplying a resources object when `waterwheel` is instantiated, you do not need to use `.populateResources()` to fetch the resources prior to making any subsequent API calls.
 
 ```javascript
 waterwheel.populateResources()
@@ -259,3 +259,109 @@ waterwheel.api.node.page.get(1, 'hal_json')
   - `includedFields`: Optionally provide a single field as a `string`, or an `array` of `strings` to filter the embedded request by.
 
 When requesting embedded resources duplicates are removed to prevent extra HTTP requests. An array is returned with your original response and any embedded resources. If any of the subsequent requests fail, the promise is rejected.
+
+### JSON API
+
+`waterwheel` contains provisional support for requesting data using the `json:api` format. Currently only `GET` requests are supported; this simplifies the instantiation of `waterwheel`.
+
+```javascript
+const Waterwheel = require('waterwheel');
+const waterwheel = new Waterwheel('http://foo.dev', null, {});
+```
+
+The `jsonapi.get()` method accepts 3 arguments,
+  - `resource`: The `bundle` and the `entity` you want to request.
+  - `params`: Any arguments that your request requires. These are translated to query string arguments prior to sending the request.
+  - `id`: The UUID of a single entity to fetch. This can be overloaded to include the name of a related entity.
+
+The `jsonapi.post()` method accepts 2 arguments,
+  - `resource`: The `bundle` and the `entity` you want to create.
+  - `body`: The data to be sent to Drupal. Review the [JSON API documentation](http://jsonapi.org/format/#crud-creating) for specifics on payload structure for posting an individual entity.
+
+The following examples outline some of the basic features of using `JSON API`.
+
+#### Collections/Lists
+
+```javascript
+waterwheel.jsonapi.get('node/article', {})
+.then(res => {
+  // res
+});
+```
+
+#### Request A Resource
+
+```javascript
+waterwheel.jsonapi.get('node/article', {}, 'cc1b95c7-1758-4833-89f2-7053ae8e7906')
+.then(res => {
+  // res
+});
+```
+
+#### Request A Related Resource
+
+```javascript
+waterwheel.jsonapi.get('node/article', {}, 'cc1b95c7-1758-4833-89f2-7053ae8e7906/uid')
+.then(res => {
+  // res
+});
+```
+
+#### Basic Filter
+
+```javascript
+waterwheel.jsonapi.get('node/article', {
+  filter: {
+    uuid: {
+      value: '563196f5-4432-4964-9aeb-e4d326cb1330'
+    }
+  }
+})
+.then(res => {
+  // res
+});
+```
+
+#### Filter With Operators
+
+```javascript
+waterwheel.jsonapi.request('node/article', {filter: {
+  myFilter: {
+    condition: {
+      value: '8',
+      field: 'nid',
+      operator: '<'
+    }
+  }
+}})
+.then(res => {
+  // res
+});
+```
+
+#### Post
+
+```javascript
+const postData = {
+  'data': {
+    'type':'node--article',
+    'attributes': {
+      'langcode': 'en',
+      'title': 'api created page',
+      'status': '1',
+      'promote': '0',
+      'sticky': '0',
+      'default_langcode': '1',
+      'path': null,
+      'body': {
+        'value': 'page created from the api.'
+      }
+    }
+  }
+};
+
+waterwheel.jsonapi.post('node/article', postData)
+  .then(res => {
+    // Created page.
+  });
+```

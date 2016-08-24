@@ -17,7 +17,7 @@ test.cb('Request Success', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.issueRequest('GET', '/entity/1', '12345')
     .then(res => {
@@ -40,7 +40,7 @@ test.cb('Request Failure', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.issueRequest('GET', '/entity/1', '12345')
     .catch(err => {
@@ -63,7 +63,7 @@ test.cb('Request Failure - No message', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.issueRequest('GET', '/entity/1', '12345')
     .catch(err => {
@@ -81,7 +81,7 @@ test.cb('Request No Leading Slash', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.issueRequest('GET', 'entity/1', '12345')
     .then(res => {
@@ -99,7 +99,7 @@ test.cb('CSRF Success', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.getXCSRFToken()
     .then(res => {
@@ -115,7 +115,7 @@ test.cb('CSRF Failure', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.getXCSRFToken()
     .catch(err => {
@@ -128,7 +128,7 @@ test.cb('CSRF Cache', t => {
   t.plan(1);
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.csrfToken = '1234';
 
@@ -148,15 +148,16 @@ test.cb('Empty Headers', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   request.issueRequest('GET', '/entity/1', '12345', {})
     .then(res => {
-      t.deepEqual({}, res, 'Unexpected headers returned.');
+      t.deepEqual({Authorization: 'Bearer 123456'}, res, 'Unexpected headers returned.');
       t.end();
     });
 
 });
+
 test.cb('Custom Headers', t => {
   t.plan(2);
 
@@ -165,20 +166,24 @@ test.cb('Custom Headers', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   const expectedResult = [
     {
       method: 'GET',
       url: 'http://foo.dev/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {foo: 'bar'}
+      headers: {
+        foo: 'bar',
+        Authorization: 'Bearer 123456'
+      }
     },
     {
       method: 'GET',
       url: 'http://foo.dev/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {'X-CSRF-Token': 'mycustomtoken'}
+      headers: {
+        'X-CSRF-Token': 'mycustomtoken',
+        Authorization: 'Bearer 123456'
+      }
     }
   ];
 
@@ -201,40 +206,50 @@ test.cb('Options', t => {
   ));
 
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {user: 'a', pass: 'b'});
+  const request = new Request('http://foo.dev', {oauth: '123456'});
 
   const expectedResult = [
     {
       method: 'GET',
       url: 'http://foo.dev/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {}
+      headers: {
+        Authorization: 'Bearer 123456'
+      }
     },
     {
       method: 'GET',
       url: 'http://dev.foo/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {other: 'header'}
+      headers: {
+        other: 'header',
+        Authorization: 'Bearer 123456'
+      }
     },
     {
       method: 'PATCH',
       url: 'http://foo.dev/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {'X-CSRF-Token': '34567', foo: 'bar'},
+      headers: {
+        'X-CSRF-Token': '34567',
+        foo: 'bar',
+        Authorization: 'Bearer 123456'
+      },
       data: {body: 'content'}
     },
     {
       method: 'POST',
       url: 'http://foo.dev/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {'X-CSRF-Token': '34567'},
+      headers: {
+        'X-CSRF-Token': '34567',
+        Authorization: 'Bearer 123456'
+      },
       data: {body: 'content'}
     },
     {
       method: 'DELETE',
       url: 'http://foo.dev/entity/1',
-      auth: {user: 'a', pass: 'b'},
-      headers: {'X-CSRF-Token': '34567'}
+      headers: {
+        'X-CSRF-Token': '34567',
+        Authorization: 'Bearer 123456'
+      }
     }
   ];
 
@@ -250,4 +265,24 @@ test.cb('Options', t => {
       t.is(5, res.length, 'Unexpected amount of promises returned.');
       t.end();
     });
+});
+
+test.cb('No Oauth', t => {
+  t.plan(1);
+
+  requireSubvert.subvert('axios', (options) => (
+    Promise.resolve({data: options})
+  ));
+
+  const Request = requireSubvert.require('../lib/helpers/request');
+  const request = new Request('http://foo.dev', {oauth: '123456'});
+
+  delete request.credentials.oauth;
+
+  request.issueRequest('GET', '/entity/1', '12345', {})
+    .then(res => {
+      t.is(0, Object.keys(res.headers).length, 'Unexpected Oauth key attached to headers.');
+      t.end();
+    });
+
 });
