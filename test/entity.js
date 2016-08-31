@@ -8,7 +8,7 @@ test.beforeEach(t => {
     'DELETE': '/comment/{comment}',
     'PATCH': '/comment/{comment}'
   };
-  t.context.credentials = {user: 'b', pass: 'b'};
+  t.context.credentials = {oauth: '123456'};
   t.context.base = 'http://foo.dev';
   t.context.options = '/entity/types/node/{bundle}';
 });
@@ -29,7 +29,7 @@ test.cb('Get Success', t => {
   const Entity = requireSubvert.require('../lib/entity');
   const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.get(1, 'json')
+  entity.get(1)
     .then(res => {
       t.is('getSuccess', res, 'Unexpected response.');
       requireSubvert.cleanUp();
@@ -47,7 +47,7 @@ test.cb('Set Success', t => {
   const Entity = requireSubvert.require('../lib/entity');
   const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.patch(1, 'json', {foo: 'bar'})
+  entity.patch(1, {foo: 'bar'})
     .then(function (res) {
       t.is('setSuccess', res, 'Unexpected body returned.');
       t.end();
@@ -62,7 +62,7 @@ test.cb('Set Non-Object Body', t => {
   const Entity = requireSubvert.require('../lib/entity');
   const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.patch(1, 'json', '')
+  entity.patch(1)
     .then(res => {
       t.is('setNonObjectBody', res, 'Unexpected body returned.');
       t.end();
@@ -79,7 +79,7 @@ test.cb('Create Success', t => {
   const Entity = requireSubvert.require('../lib/entity');
   const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
 
-  entity.post('json', {foo: 'bar'})
+  entity.post({foo: 'bar'})
     .then(res => {
       t.is('createSuccess', res, 'Unexpected body returned.');
       t.end();

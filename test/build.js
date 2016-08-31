@@ -61,10 +61,10 @@ test.cb('Waterwheel Browser', t => {
     nightmare
       .goto(`http://localhost:${t.context.port}/demo.html`)
       .evaluate(() => {
-        return new window.Waterwheel('http://foo.dev', {username: 'foo', 'password': 'bar'});
+        return new window.Waterwheel('http://foo.dev', {oauth: '123456'});
       })
       .then(result => {
-        t.deepEqual(result.credentials, {username: 'foo', 'password': 'bar'}, 'Unexpected credentials returned');
+        t.deepEqual(result.credentials, {oauth: '123456'}, 'Unexpected credentials returned');
         t.end();
       });
   });
