@@ -4,15 +4,17 @@ const entityTypes = require('./sample/entity.types.json');
 
 test.beforeEach(t => {
   t.context.Waterwheel = requireSubvert.require('../lib/waterwheel');
-  t.context.methods = {
-    'GET': '/comment/{comment}',
-    'POST': '/entity/comment',
-    'DELETE': '/comment/{comment}',
-    'PATCH': '/comment/{comment}'
+  t.context.options = {
+    base: 'http://foo.dev',
+    credentials: {oauth: '123456'},
+    methods: {
+      'GET': '/comment/{comment}',
+      'POST': '/entity/comment',
+      'DELETE': '/comment/{comment}',
+      'PATCH': '/comment/{comment}'
+    },
+    more: '/entity/types/comment/{bundle}'
   };
-  t.context.credentials = {oauth: '123456'};
-  t.context.base = 'http://foo.dev';
-  t.context.options = '/entity/types/comment/{bundle}';
 });
 
 test.afterEach(t => {
@@ -20,48 +22,40 @@ test.afterEach(t => {
 });
 
 test('Waterwheel Creation', t => {
-  t.plan(1);
-
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
-test('Waterwheel Creation - Missing informations', t => {
-  t.plan(3);
-
-  t.throws(() => new t.context.Waterwheel(null, {oauth: '12345'}), 'Missing base path.');
-  t.throws(() => new t.context.Waterwheel(null, {oauth: '12345'}, {}), 'Missing base path.');
-  t.throws(() => new t.context.Waterwheel('http://foo.dev', {foo: 'bar'}, {}), 'Incorrect authentication method.');
+test('Waterwheel Creation - Missing information', t => {
+  t.throws(() => new t.context.Waterwheel({credentials: {oauth: '12345'}}), 'Missing base path.');
+  t.throws(() => new t.context.Waterwheel({base: 'http://foo.dev'}), 'Missing credentials.');
+  t.throws(() => new t.context.Waterwheel({base: 'http://foo.dev', credentials: {foo: 'bar'}, resources: {}}), 'Incorrect authentication method.');
 });
 
 test('Waterwheel Creation - Create with resources', t => {
-  t.plan(1);
-  const waterwheel = new t.context.Waterwheel('http://foo.dev', {oauth: '123456'}, entityTypes);
+  const waterwheel = new t.context.Waterwheel({base: 'http://foo.dev', credentials: {oauth: '123456'}, resources: entityTypes});
   t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
 test('Get URL Base', t => {
-  t.plan(2);
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
 
   const Entity = requireSubvert.require('../lib/entity');
-  waterwheel.api.content = new Entity(t.context.base, t.context.credentials, t.context.methods,'', '', t.context.options);
+  waterwheel.api.content = new Entity(t.context.options);
 
-  t.is(t.context.base, waterwheel.api.content.getBase(), 'Unexpected URL base.');
+  t.is(t.context.options.base, waterwheel.api.content.getBase(), 'Unexpected URL base.');
 
   waterwheel.api.content.setBase('http://foo2.dev');
   t.is('http://foo2.dev', waterwheel.api.content.getBase(), 'URL base was not set correctly.');
 });
 
 test('Get Credentials', t => {
-  t.plan(2);
-
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
 
   const Entity = requireSubvert.require('../lib/entity');
-  waterwheel.api.fakeEntity = new Entity(t.context.base, t.context.credentials, t.context.methods,'', '', t.context.options);
+  waterwheel.api.fakeEntity = new Entity(t.context.options);
 
-  t.deepEqual(t.context.credentials, waterwheel.api.fakeEntity.getCredentials(), 'Unexpected credentials.');
+  t.deepEqual(t.context.options.credentials, waterwheel.api.fakeEntity.getCredentials(), 'Unexpected credentials.');
 
   waterwheel.api.fakeEntity.setCredentials({oauth: '987654321'});
   t.deepEqual({oauth: '987654321'}, waterwheel.api.fakeEntity.getCredentials(), 'Credentials object was not set correctly.');
@@ -70,35 +64,33 @@ test('Get Credentials', t => {
 });
 
 test('Set Bad Credentials', t => {
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
 
   const Entity = requireSubvert.require('../lib/entity');
-  waterwheel.api.fakeEntity = new Entity(t.context.base, t.context.credentials, t.context.methods,'', '', t.context.options);
+  waterwheel.api.fakeEntity = new Entity(t.context.options);
 
   waterwheel.api.fakeEntity.setCredentials({oauth: '987654321'});
   t.throws(() => waterwheel.api.fakeEntity.setCredentials({foo: 'bar'}), 'Incorrect authentication method.');
 });
 
 test('Add Resources', t => {
-  t.plan(2);
-
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   waterwheel.addResources(
     {comment: {
-      base: t.context.base,
-      credentials: t.context.credentials,
-      methods: t.context.methods,
-      entityType: 'comment',
+      base: t.context.options.base,
+      credentials: t.context.options.credentials,
+      methods: t.context.options.methods,
+      entity: 'comment',
       bundle: 'comment',
-      options: t.context.options
+      options: t.context.options.options
     },
     article: {
       base: false,
       credentials: null,
-      methods: t.context.methods,
-      entityType: 'comment',
+      methods: t.context.options.methods,
+      entity: 'comment',
       bundle: 'comment',
-      options: t.context.options
+      options: t.context.options.options
     }}
   );
 
@@ -107,25 +99,21 @@ test('Add Resources', t => {
 });
 
 test('getAvailableResources',t => {
-  t.plan(1);
-
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   const Entity = requireSubvert.require('../lib/entity');
   waterwheel.api.node = {
-    article: new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options),
-    page: new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'page', t.context.options)
+    article: new Entity(t.context.options),
+    page: new Entity(t.context.options)
   };
   t.deepEqual(waterwheel.getAvailableResources(), ['node.article', 'node.page'], 'Entity not added correctly.');
 });
 
 test.cb('Fetch Resources', t => {
-  t.plan(1);
-
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: 'resourceSuccess'})
   ));
 
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   waterwheel.fetchResources()
     .then(res => {
       t.is(res, 'resourceSuccess', 'Unexpected value returned.');
@@ -134,9 +122,7 @@ test.cb('Fetch Resources', t => {
 });
 
 test.cb('Populate Resources', t => {
-  t.plan(1);
-
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   waterwheel.fetchResources = () => Promise.resolve(entityTypes);
 
   waterwheel.populateResources()
@@ -160,7 +146,7 @@ test.cb('Populate Resources', t => {
 });
 
 test('Fetch Embedded - Missing _embedded key', t => {
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   return waterwheel.fetchEmbedded({})
     .catch(err =>{
       t.is(err, 'This is probably not HAL+JSON');
@@ -168,7 +154,7 @@ test('Fetch Embedded - Missing _embedded key', t => {
 });
 
 test('Fetch Embedded - Missing response', t => {
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   return waterwheel.fetchEmbedded()
     .catch(err =>{
       t.is(err, 'This is probably not HAL+JSON');
@@ -180,7 +166,7 @@ test('Fetch Embedded', t => {
     Promise.resolve({data: {halExample: 'Some HAL+JSON'}})
   ));
 
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   const halJSON = require('./sample/hal.example.json');
   return waterwheel.fetchEmbedded(halJSON)
     .then(res =>{
@@ -194,7 +180,7 @@ test('Fetch Embedded - Single Field', t => {
     Promise.resolve({data: {halExample: 'Some HAL+JSON'}})
   ));
 
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   const halJSON = require('./sample/hal.example.json');
   return waterwheel.fetchEmbedded(halJSON, 'field_actor')
     .then(res =>{
@@ -208,7 +194,7 @@ test('Fetch Embedded - Multiple Fields', t => {
     Promise.resolve({data: {halExample: 'Some HAL+JSON'}})
   ));
 
-  const waterwheel = new t.context.Waterwheel(t.context.base, t.context.credentials);
+  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
   const halJSON = require('./sample/hal.example.json');
   return waterwheel.fetchEmbedded(halJSON, ['field_actor', 'revision_uid'])
     .then(res =>{

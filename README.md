@@ -41,22 +41,23 @@ The majority of the functionality in Waterwheel is dependent on the [Waterwheel-
 ```javascript
 // Server
 const Waterwheel = require('waterwheel');
-const waterwheel = new Waterwheel('http://test.dev', {oauth: '12345'});
+const waterwheel = new Waterwheel({base: 'http://test.dev', credentials: {oauth: '12345'}});
 
 // Browser
 import '../../path/to/node_modules/waterwheel/dist/waterwheel.js'
-const waterwheel = new window.Waterwheel('http://test.dev', {oauth: '12345'});
+const waterwheel = new window.Waterwheel({base: 'http://test.dev', credentials: {oauth: '12345'}});
 
 // With resources
-const waterwheel = new Waterwheel('http://test.dev', {oauth: '12345'}, require('./resources.json'));
+const waterwheel = new Waterwheel({base: 'http://test.dev', credentials: {oauth: '12345'}, resources: require('./resources.json')});
 ```
 
-Waterwheel when instantiated accepts 3 arguments,
+Waterwheel when instantiated accepts a single object,
   - `base`: The base path for your Drupal instance. All request paths will be built from this base
   - `credentials`: An object containing the OAuth Bearer token used to authenticate with Drupal. Currently Waterwheel requires a token for all requests. The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
+  - `timeout`: How long an HTTP request should idle for before being canceled.
 
-  Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`. Additionally if a valid `resources` object is passed, `credentials` become optional when `waterwheel` is instantiated.
+  Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`.
 
 ### Populate `waterwheel` resources
 
@@ -90,7 +91,7 @@ waterwheel.addResources(
     base: {{ base url }},
     credentials: {{ credentials }},
     methods: {{ methods }},
-    entityType: 'node',
+    entity: 'node',
     bundle: 'page',
     options: {{ extended information path }}
   }}
@@ -101,7 +102,7 @@ When adding resources the parent object key will be used to identify the new res
   - `base`: The base path for your Drupal instance. All request for this resource will use this path. This can be different from the path used when instantiating `waterwheel`.
   - `credentials`: An object containing the `username` and `password` used to authenticate with Drupal. This can be different from the credentials used when instantiating `waterwheel`.
   - `methods`: An object containing the following keys, `GET`, `POST`, `PATCH`, `DELETE`. Each key should contain the path suffix that the action can be preformed on.
-  - `entityType`: The entity type that this resource should reference, ie. `node`.
+  - `entity`: The entity type that this resource should reference, ie. `node`.
   - `bundle`: The bundle that this resource should reference, ie. `page`.
   - `options`: The path used to get extended (field) information about the `bundle`. This is usually provided automatically by Waterwheel-Drupal, but can be manually specified.
 
