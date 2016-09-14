@@ -23,7 +23,7 @@ const webpackConfig = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loaders: ['babel?presets[]=es2015']
+        loaders: ['babel?cacheDirectory&presets[]=es2015']
       },
       {
         test: /\.json?$/,
@@ -47,8 +47,6 @@ test.afterEach.cb(t => {
 });
 
 test.cb('Webpack Build', t => {
-  t.plan(1);
-
   webpack(webpackConfig, (err, stats) => {
     t.is(err, null, 'An error was returned from Webpack');
     t.end();
@@ -56,15 +54,14 @@ test.cb('Webpack Build', t => {
 });
 
 test.cb('Waterwheel Browser', t => {
-  t.plan(1);
   webpack(webpackConfig, (err, stats) => {
     nightmare
       .goto(`http://localhost:${t.context.port}/demo.html`)
       .evaluate(() => {
-        return new window.Waterwheel('http://foo.dev', {oauth: '123456'});
+        return new window.Waterwheel({base: 'http://foo.dev', credentials: {oauth: '123456'}});
       })
       .then(result => {
-        t.deepEqual(result.credentials, {oauth: '123456'}, 'Unexpected credentials returned');
+        t.deepEqual(result.options.credentials, {oauth: '123456'}, 'Unexpected credentials returned');
         t.end();
       });
   });

@@ -2,15 +2,19 @@ const test = require('ava');
 let requireSubvert = require('require-subvert')(__dirname);
 
 test.beforeEach(t => {
-  t.context.methods = {
-    'GET': '/comment/{comment}',
-    'POST': '/entity/comment',
-    'DELETE': '/comment/{comment}',
-    'PATCH': '/comment/{comment}'
+  t.context.options = {
+    base: 'http://foo.dev',
+    credentials: {oauth: '123456'},
+    methods: {
+      'GET': '/comment/{comment}',
+      'POST': '/entity/comment',
+      'DELETE': '/comment/{comment}',
+      'PATCH': '/comment/{comment}'
+    },
+    resourceInfo: '/entity/types/comment/{bundle}',
+    entity: 'node',
+    bundle: 'article'
   };
-  t.context.credentials = {oauth: '123456'};
-  t.context.base = 'http://foo.dev';
-  t.context.options = '/entity/types/node/{bundle}';
 });
 
 test.afterEach.cb(t => {
@@ -20,14 +24,12 @@ test.afterEach.cb(t => {
 
 // Get
 test.cb('Get Success', t => {
-  t.plan(1);
-
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: 'getSuccess'})
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
+  const entity = new Entity(t.context.options);
 
   entity.get(1)
     .then(res => {
@@ -39,13 +41,12 @@ test.cb('Get Success', t => {
 
 // Set
 test.cb('Set Success', t => {
-  t.plan(1);
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: 'setSuccess'})
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
+  const entity = new Entity(t.context.options);
 
   entity.patch(1, {foo: 'bar'})
     .then(function (res) {
@@ -53,14 +54,14 @@ test.cb('Set Success', t => {
       t.end();
     });
 });
+
 test.cb('Set Non-Object Body', t => {
-  t.plan(1);
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: 'setNonObjectBody'})
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
+  const entity = new Entity(t.context.options);
 
   entity.patch(1)
     .then(res => {
@@ -71,13 +72,12 @@ test.cb('Set Non-Object Body', t => {
 
 // Create
 test.cb('Create Success', t => {
-  t.plan(1);
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: 'createSuccess'})
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
+  const entity = new Entity(t.context.options);
 
   entity.post({foo: 'bar'})
     .then(res => {
@@ -88,13 +88,12 @@ test.cb('Create Success', t => {
 
 // Delete
 test.cb('Delete Success', t => {
-  t.plan(1);
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: 'deleteSuccess'})
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods);
+  const entity = new Entity(t.context.options);
 
   entity.delete(1)
     .then(res => {
@@ -104,15 +103,13 @@ test.cb('Delete Success', t => {
 });
 
 test.cb('Get Field Data', t => {
-  t.plan(2);
-
   const fieldData = {a: 'a', b: 'b', c: 'c'};
   requireSubvert.subvert('axios', () => (
     Promise.resolve({data: fieldData})
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options);
+  const entity = new Entity(t.context.options);
 
   entity.getFieldData()
     .then(res => {
@@ -123,8 +120,6 @@ test.cb('Get Field Data', t => {
 });
 
 test.cb('Set Field Data', t => {
-  t.plan(1);
-
   const expectedResponse = {type: 'article', a: [{value: 'b'}]};
 
   requireSubvert.subvert('axios', () => (
@@ -132,7 +127,7 @@ test.cb('Set Field Data', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options);
+  const entity = new Entity(t.context.options);
 
   entity.metadata = {fields: {a: {}, b: {}, c: {}}};
 
@@ -145,8 +140,6 @@ test.cb('Set Field Data', t => {
 });
 
 test.cb('Fetch Field Data, Set Field Data', t => {
-  t.plan(5);
-
   const expectedResponse = {type: 'article', title:[{value: 'A cool new title.'}]};
 
   requireSubvert.subvert('axios', () => (
@@ -154,7 +147,7 @@ test.cb('Fetch Field Data, Set Field Data', t => {
   ));
 
   const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.base, t.context.credentials, t.context.methods, 'node', 'article', t.context.options);
+  const entity = new Entity(t.context.options);
 
   // Mock getFieldData.
   entity.getFieldData = () => {
@@ -194,5 +187,12 @@ test.cb('Fetch Field Data, Set Field Data', t => {
       t.is(err.message, 'The field, aaa, is not included within the bundle, article.', 'Unexpected Error Message.');
       t.end();
     });
+});
 
+test('Get Field Data - No Options', t => {
+  const Entity = requireSubvert.require('../lib/entity');
+  const entity = new Entity(t.context.options);
+  delete entity.options.methods.OPTIONS;
+  return entity.getFieldData()
+    .catch(err => t.is(err, 'No available OPTIONS path for article.'));
 });
