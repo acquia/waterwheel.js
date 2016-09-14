@@ -93,7 +93,7 @@ waterwheel.addResources(
     methods: {{ methods }},
     entity: 'node',
     bundle: 'page',
-    options: {{ extended information path }}
+    resourceInfo: {{ extended information path }}
   }}
 );
 ```

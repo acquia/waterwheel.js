@@ -11,7 +11,7 @@ test.beforeEach(t => {
       'DELETE': '/comment/{comment}',
       'PATCH': '/comment/{comment}'
     },
-    more: '/entity/types/comment/{bundle}',
+    resourceInfo: '/entity/types/comment/{bundle}',
     entity: 'node',
     bundle: 'article'
   };

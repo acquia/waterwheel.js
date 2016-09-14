@@ -82,7 +82,7 @@ test('Add Resources', t => {
       methods: t.context.options.methods,
       entity: 'comment',
       bundle: 'comment',
-      options: t.context.options.options
+      resourceInfo: t.context.options.options
     },
     article: {
       base: false,
@@ -90,7 +90,7 @@ test('Add Resources', t => {
       methods: t.context.options.methods,
       entity: 'comment',
       bundle: 'comment',
-      options: t.context.options.options
+      resourceInfo: t.context.options.options
     }}
   );
 
