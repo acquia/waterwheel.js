@@ -3,174 +3,107 @@ const requireSubvert = require('require-subvert')(__dirname);
 
 const methods = require('../lib/helpers/methods');
 
-test.afterEach.cb(t => {
+test.beforeEach(t => {
+  t.context.options = {
+    base: 'http://foo.dev',
+    credentials: {oauth: '123456'},
+    methods: {
+      'GET': '/comment/{comment}',
+      'POST': '/entity/comment',
+      'DELETE': '/comment/{comment}',
+      'PATCH': '/comment/{comment}'
+    },
+    more: '/entity/types/comment/{bundle}'
+  };
+});
+
+test.afterEach(t => {
   requireSubvert.cleanUp();
-  t.end();
 });
 
-// Request
-test.cb('Request Success', t => {
-  t.plan(1);
-
-  requireSubvert.subvert('axios', () => (
-    Promise.resolve({data: 'foo'})
-  ));
-
+//Request
+test('Request Success', t => {
+  requireSubvert.subvert('axios', () => Promise.resolve({data: 'foo'}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  request.issueRequest('GET', '/entity/1', '12345')
-    .then(res => {
-      t.is('foo', res, 'Unexpected body returned.');
-      t.end();
-    });
+  const request = new Request(t.context.options);
+  return request.issueRequest(methods.get, '/entity/1', '12345')
+    .then(res => t.is(res, 'foo', 'Unexpected body returned.'));
 });
-test.cb('Request Failure', t => {
-  t.plan(3);
 
-  requireSubvert.subvert('axios', () => (
-    Promise.reject({
-      response: {
-        data: {
-          message: 'bar'
-        },
-        status: 404
-      }
-    })
-  ));
-
+test('Request Failure', t => {
+  requireSubvert.subvert('axios', () => Promise.reject({response: {data: {message: 'bar'}, status: 404}}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  request.issueRequest('GET', '/entity/1', '12345')
-    .catch(err => {
-      t.is(true, err instanceof Error, 'Unxpected response.');
-      t.is(404, err.status, 'Unxpected response.');
-      t.is('bar', err.message, 'Unxpected response.');
-      t.end();
-    });
+  const request = new Request(t.context.options);
+  return request.issueRequest(methods.get, '/entity/1', '12345')
+    .catch(err => t.is(true, err instanceof Error, 'Unxpected response.'));
 });
-test.cb('Request Failure - No message', t => {
-  t.plan(3);
 
-  requireSubvert.subvert('axios', () => (
-    Promise.reject({
-      response: {
-        data: {},
-        status: 404
-      }
-    })
-  ));
-
+test('Request Timeout', t => {
+  requireSubvert.subvert('axios', () => Promise.reject({message: 'A timeout'}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  request.issueRequest('GET', '/entity/1', '12345')
-    .catch(err => {
-      t.is(true, err instanceof Error, 'Unxpected response.');
-      t.is(404, err.status, 'Unxpected response.');
-      t.is('Unknown error.', err.message, 'Unxpected response.');
-      t.end();
-    });
+  const request = new Request(t.context.options);
+  return request.issueRequest(methods.get, '/entity/1', '12345')
+    .catch(err => t.is(err.message, 'Timeout', 'Unxpected response.'));
 });
-test.cb('Request No Leading Slash', t => {
-  t.plan(1);
 
-  requireSubvert.subvert('axios', () => (
-    Promise.resolve({data: 'foo'})
-  ));
-
+test('Request Failure - No message', t => {
+  requireSubvert.subvert('axios', () => Promise.reject({}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
+  const request = new Request(t.context.options);
+  return request.issueRequest(methods.get, '/entity/1', '12345')
+    .catch(err => t.is(true, err instanceof Error, 'Unxpected response.'));
+});
 
-  request.issueRequest('GET', 'entity/1', '12345')
-    .then(res => {
-      t.is('foo', res, 'Unexpected body returned.');
-      t.end();
-    });
+test('Request No Leading Slash', t => {
+  requireSubvert.subvert('axios', () => Promise.resolve({data: 'foo'}));
+  const Request = requireSubvert.require('../lib/helpers/request');
+  const request = new Request(t.context.options);
+  return request.issueRequest(methods.get, 'entity/1', '12345')
+    .then(res => t.is(res, 'foo', 'Unexpected body returned.'));
 });
 
 // CSRF Tokens
-test.cb('CSRF Success', t => {
-  t.plan(1);
-
-  requireSubvert.subvert('axios', () => (
-    Promise.resolve({data: 'foo'})
-  ));
-
+test('CSRF Success', t => {
+  requireSubvert.subvert('axios', () => Promise.resolve({data: 'foo'}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  request.getXCSRFToken()
-    .then(res => {
-      t.is(res, 'foo', 'Unexpected response.');
-      t.end();
-    });
-});
-test.cb('CSRF Failure', t => {
-  t.plan(1);
-
-  requireSubvert.subvert('axios', () => (
-    Promise.reject('bar')
-  ));
-
-  const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  request.getXCSRFToken()
-    .catch(err => {
-      t.is(err, 'bar', 'Unexpected response.');
-      t.end();
-    });
+  const request = new Request(t.context.options);
+  return request.getXCSRFToken()
+    .then(res => t.is(res, 'foo', 'Unexpected body returned.'));
 });
 
-test.cb('CSRF Cache', t => {
-  t.plan(1);
-
+test('CSRF Failure', t => {
+  requireSubvert.subvert('axios', () => Promise.reject('bar'));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
+  const request = new Request(t.context.options);
+  return request.getXCSRFToken()
+    .catch(err => t.is(err, 'bar', 'Unexpected response.'));
+});
 
+test('CSRF Cache', t => {
+  const Request = requireSubvert.require('../lib/helpers/request');
+  const request = new Request(t.context.options);
   request.csrfToken = '1234';
-
-  request.getXCSRFToken()
-    .then(res => {
-      t.is(res, '1234', 'Unexpected response.');
-      t.end();
-    });
+  return request.getXCSRFToken()
+    .then(res => t.is(res, '1234', 'Unexpected response.'));
 });
 
 // Headers
-test.cb('Empty Headers', t => {
-  t.plan(1);
-
-  requireSubvert.subvert('axios', (options) => (
-    Promise.resolve({data: options.headers})
-  ));
-
+test('Empty Headers', t => {
+  requireSubvert.subvert('axios', options => Promise.resolve({data: options.headers}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  request.issueRequest('GET', '/entity/1', '12345', {})
-    .then(res => {
-      t.deepEqual({Authorization: 'Bearer 123456'}, res, 'Unexpected headers returned.');
-      t.end();
-    });
-
+  const request = new Request(t.context.options);
+  return request.issueRequest(methods.get, '/entity/1', '12345', {})
+    .then(res => t.deepEqual({Authorization: 'Bearer 123456'}, res, 'Unexpected headers returned.'));
 });
 
-test.cb('Custom Headers', t => {
-  t.plan(2);
-
-  requireSubvert.subvert('axios', (options) => (
-    Promise.resolve({data: options})
-  ));
-
+test('Custom Headers', t => {
+  requireSubvert.subvert('axios', options => Promise.resolve({data: options}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
+  const request = new Request(t.context.options);
   const expectedResult = [
     {
       method: 'GET',
+      timeout: 500,
       url: 'http://foo.dev/entity/1',
       headers: {
         foo: 'bar',
@@ -179,6 +112,7 @@ test.cb('Custom Headers', t => {
     },
     {
       method: 'GET',
+      timeout: 500,
       url: 'http://foo.dev/entity/1',
       headers: {
         'X-CSRF-Token': 'mycustomtoken',
@@ -186,31 +120,24 @@ test.cb('Custom Headers', t => {
       }
     }
   ];
-
-  Promise.all([
-    request.issueRequest('GET', '/entity/1', '34567', {'foo': 'bar'}),
-    request.issueRequest('GET', '/entity/1', '34567', {'X-CSRF-Token': 'mycustomtoken'})
+  return Promise.all([
+    request.issueRequest(methods.get, '/entity/1', '34567', {'foo': 'bar'}),
+    request.issueRequest(methods.get, '/entity/1', '34567', {'X-CSRF-Token': 'mycustomtoken'})
   ])
-    .then(res => {
-      t.deepEqual(expectedResult, res, 'Unexpected result.');
-      t.is(2, res.length, 'Unexpected amount of promises returned.');
-      t.end();
-    });
+  .then(res => {
+    t.deepEqual(expectedResult, res, 'Unexpected result.');
+    t.is(2, res.length, 'Unexpected amount of promises returned.');
+  });
 });
 
-test.cb('Options', t => {
-  t.plan(2);
-
-  requireSubvert.subvert('axios', (options) => (
-    Promise.resolve({data: options})
-  ));
-
+test('Options', t => {
+  requireSubvert.subvert('axios', options => Promise.resolve({data: options}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
+  const request = new Request(t.context.options);
   const expectedResult = [
     {
       method: 'GET',
+      timeout: 500,
       url: 'http://foo.dev/entity/1',
       headers: {
         Authorization: 'Bearer 123456'
@@ -218,6 +145,7 @@ test.cb('Options', t => {
     },
     {
       method: 'GET',
+      timeout: 500,
       url: 'http://dev.foo/entity/1',
       headers: {
         other: 'header',
@@ -226,6 +154,7 @@ test.cb('Options', t => {
     },
     {
       method: 'PATCH',
+      timeout: 500,
       url: 'http://foo.dev/entity/1',
       headers: {
         'X-CSRF-Token': '34567',
@@ -236,6 +165,7 @@ test.cb('Options', t => {
     },
     {
       method: 'POST',
+      timeout: 500,
       url: 'http://foo.dev/entity/1',
       headers: {
         'X-CSRF-Token': '34567',
@@ -245,6 +175,7 @@ test.cb('Options', t => {
     },
     {
       method: 'DELETE',
+      timeout: 500,
       url: 'http://foo.dev/entity/1',
       headers: {
         'X-CSRF-Token': '34567',
@@ -252,37 +183,24 @@ test.cb('Options', t => {
       }
     }
   ];
-
-  Promise.all([
+  return Promise.all([
     request.issueRequest(methods.get, '/entity/1'),
     request.issueRequest(methods.get, '/entity/1', '1234', {'other': 'header'}, false, 'http://dev.foo'),
     request.issueRequest(methods.patch, 'entity/1', '34567', {'foo': 'bar'}, {'body': 'content'}),
     request.issueRequest(methods.post, 'entity/1', '34567', false, {'body': 'content'}),
     request.issueRequest(methods.delete, 'entity/1', '34567')
   ])
-    .then(res => {
-      t.deepEqual(expectedResult, res, 'Unexpected results.');
-      t.is(5, res.length, 'Unexpected amount of promises returned.');
-      t.end();
-    });
+  .then(res => {
+    t.deepEqual(expectedResult, res, 'Unexpected results.');
+    t.is(5, res.length, 'Unexpected amount of promises returned.');
+  });
 });
 
-test.cb('No Oauth', t => {
-  t.plan(1);
-
-  requireSubvert.subvert('axios', (options) => (
-    Promise.resolve({data: options})
-  ));
-
+test('No Oauth', t => {
+  requireSubvert.subvert('axios', options => Promise.resolve({data: options}));
   const Request = requireSubvert.require('../lib/helpers/request');
-  const request = new Request('http://foo.dev', {oauth: '123456'});
-
-  delete request.credentials.oauth;
-
-  request.issueRequest('GET', '/entity/1', '12345', {})
-    .then(res => {
-      t.is(0, Object.keys(res.headers).length, 'Unexpected Oauth key attached to headers.');
-      t.end();
-    });
-
+  const request = new Request(t.context.options);
+  delete request.options.credentials.oauth;
+  return request.issueRequest(methods.get, '/entity/1', '12345', {})
+    .then(res => t.is(0, Object.keys(res.headers).length, 'Unexpected Oauth key attached to headers.'));
 });

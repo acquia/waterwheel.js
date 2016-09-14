@@ -20,7 +20,7 @@ module.exports = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loaders: ['babel?presets[]=es2015']
+        loaders: ['babel?cacheDirectory&presets[]=es2015']
       },
       {
         test: /\.json?$/,
