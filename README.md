@@ -174,7 +174,7 @@ waterwheel.api.user.post({})
   });
 ```
 `.post()` accepts two arguments
-  - `body`: An object that formatted in a way that Drupal will be able to parse. This object should contain all the information needed to create an entity. This object is passed directly to Drupal.
+  - `body`: An object that is formatted in a way that Drupal will be able to parse. This object should contain all the information needed to create an entity. This object is passed directly to Drupal.
   - `format`: The format of the object you are passing. Currently this is optional, and internally defaults to `application/json`.
 
 #### `DELETE`
