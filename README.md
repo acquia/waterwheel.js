@@ -159,7 +159,7 @@ waterwheel.api.user.patch(1, {})
 ```
 `.patch()` accepts three arguments
   - `identifier`: The identifier for the entity you are attempting to modify, `nid`, `vid`, `uid`, etc.
-  - `body`: An object that formatted in a way that Drupal will be able to parse. This object is passed directly to Drupal.
+  - `body`: An object that is formatted in a way that Drupal will be able to parse. This object is passed directly to Drupal.
   - `format`: The format of the object you are passing. Currently this is optional, and internally defaults to `JSON`.
 
 #### `POST`
