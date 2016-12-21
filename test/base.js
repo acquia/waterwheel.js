@@ -1,6 +1,6 @@
 const test = require('ava');
 const requireSubvert = require('require-subvert')(__dirname);
-const entityTypes = require('./sample/entity.types.json');
+const swaggerData = require('./sample/swagger.example.json');
 
 test.beforeEach(t => {
   t.context.Waterwheel = requireSubvert.require('../lib/waterwheel');
@@ -33,7 +33,7 @@ test('Waterwheel Creation - Missing information', t => {
 });
 
 test('Waterwheel Creation - Create with resources', t => {
-  const waterwheel = new t.context.Waterwheel({base: 'http://foo.dev', credentials: {oauth: '123456'}, resources: entityTypes});
+  const waterwheel = new t.context.Waterwheel({base: 'http://foo.dev', credentials: {oauth: '123456'}, resources: swaggerData});
   t.is(true, waterwheel instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
@@ -73,74 +73,24 @@ test('Set Bad Credentials', t => {
   t.throws(() => waterwheel.api.fakeEntity.setCredentials({foo: 'bar'}), 'Incorrect authentication method.');
 });
 
-test('Add Resources', t => {
-  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
-  waterwheel.addResources(
-    {comment: {
-      base: t.context.options.base,
-      credentials: t.context.options.credentials,
-      methods: t.context.options.methods,
-      entity: 'comment',
-      bundle: 'comment',
-      resourceInfo: t.context.options.options
-    },
-    article: {
-      base: false,
-      credentials: null,
-      methods: t.context.options.methods,
-      entity: 'comment',
-      bundle: 'comment',
-      resourceInfo: t.context.options.options
-    }}
-  );
-
-  t.truthy(waterwheel.addResources() instanceof Error, 'Error not returned.');
-  t.deepEqual(waterwheel.getAvailableResources(), ['article', 'comment'], 'Entity not added correctly.');
-});
-
 test('getAvailableResources',t => {
-  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
-  const Entity = requireSubvert.require('../lib/entity');
-  waterwheel.api.node = {
-    article: new Entity(t.context.options),
-    page: new Entity(t.context.options)
-  };
-  t.deepEqual(waterwheel.getAvailableResources(), ['node.article', 'node.page'], 'Entity not added correctly.');
-});
-
-test.cb('Fetch Resources', t => {
-  requireSubvert.subvert('axios', () => (
-    Promise.resolve({data: 'resourceSuccess'})
-  ));
-
-  const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
-  waterwheel.fetchResources()
-    .then(res => {
-      t.is(res, 'resourceSuccess', 'Unexpected value returned.');
-      t.end();
-    });
+  const waterwheel = new t.context.Waterwheel({
+    base: t.context.options.base,
+    credentials: t.context.options.credentials,
+    resources: swaggerData
+  });
+  t.deepEqual(waterwheel.getAvailableResources(), ['node:article','node:page', 'user'], 'Entity not added correctly.');
 });
 
 test.cb('Populate Resources', t => {
+  requireSubvert.subvert('axios', () => (
+    Promise.resolve({data: swaggerData})
+  ));
   const waterwheel = new t.context.Waterwheel({base: t.context.options.base, credentials: t.context.options.credentials});
-  waterwheel.fetchResources = () => Promise.resolve(entityTypes);
 
   waterwheel.populateResources()
-    .then(res => {
-      t.deepEqual(
-        res,
-        [
-          'comment',
-          'file',
-          'menu',
-          'node.article',
-          'node.page',
-          'node_type.content_type',
-          'taxonomy_term.tags',
-          'taxonomy_vocabulary',
-          'user'
-        ],
-        'Unexpected Response.');
+    .then(() => {
+      t.deepEqual(waterwheel.getAvailableResources(), ['node:article','node:page', 'user']);
       t.end();
     });
 });

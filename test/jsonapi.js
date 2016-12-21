@@ -22,12 +22,12 @@ test.afterEach(t => {
   requireSubvert.cleanUp();
 });
 
-test('JSONAPI - Create', t => {
+test('Create', t => {
   const jsonapi = new t.context.JSONAPI(t.context.options);
   t.is(true, jsonapi instanceof t.context.JSONAPI, 'Unexpected creation.');
 });
 
-test('JSONAPI - Collections / Lists', t => {
+test('Collections / Lists', t => {
   requireSubvert.subvert('axios', options => (
     Promise.resolve({data: options})
   ));
@@ -38,7 +38,7 @@ test('JSONAPI - Collections / Lists', t => {
     });
 });
 
-test('JSONAPI - Related resources', t => {
+test('Related resources', t => {
   requireSubvert.subvert('axios', options => (
     Promise.resolve({data: options})
   ));
@@ -49,7 +49,7 @@ test('JSONAPI - Related resources', t => {
     });
 });
 
-test('JSONAPI - Filter basic', t => {
+test('Filter basic', t => {
   requireSubvert.subvert('axios', options => (
     Promise.resolve({data: options})
   ));
@@ -66,7 +66,7 @@ test('JSONAPI - Filter basic', t => {
     });
 });
 
-test('JSONAPI - Filter with operator', t => {
+test('Filter with operator', t => {
   requireSubvert.subvert('axios', options => (
     Promise.resolve({data: options})
   ));
@@ -81,7 +81,7 @@ test('JSONAPI - Filter with operator', t => {
     });
 });
 
-test('JSONAPI - Post', t => {
+test('Post', t => {
   requireSubvert.subvert('axios', options => (
     Promise.resolve({data: options})
   ));
@@ -92,6 +92,28 @@ test('JSONAPI - Post', t => {
         method: 'POST',
         timeout: 500,
         url: 'http://foo.dev/api/node/article?_format=api_json',
+        headers:{
+          Authorization: 'Bearer 123456',
+          'Content-Type': 'application/vnd.api+json'
+        },
+        data: {
+          some: 'data'
+        }
+      }, res);
+    });
+});
+
+test('Patch', t => {
+  requireSubvert.subvert('axios', options => (
+    Promise.resolve({data: options})
+  ));
+  const jsonapi = new t.context.JSONAPI(t.context.options);
+  return jsonapi.patch('node/article/1234', {some: 'data'})
+    .then(res => {
+      t.deepEqual({
+        method: 'PATCH',
+        timeout: 500,
+        url: 'http://foo.dev/api/node/article/1234?_format=api_json',
         headers:{
           Authorization: 'Bearer 123456',
           'Content-Type': 'application/vnd.api+json'
