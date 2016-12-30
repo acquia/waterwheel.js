@@ -263,7 +263,7 @@ When requesting embedded resources duplicates are removed to prevent extra HTTP 
 
 ### JSON API
 
-`waterwheel` contains provisional support for requesting data using the `json:api` format. Currently only `GET` requests are supported; this simplifies the instantiation of `waterwheel`.
+`waterwheel` contains provisional support for requesting data using the `json:api` format. A `prefix` option can be passed into the constructor to allow for older versions of the JSON API module, which used the `api` prefix in the URL, to be used. The `prefix` option defaults to `jsonapi` and in turn, builds a URL like the following example: `http://foo.dev/jsonapi/node/article?_format=api_json`.
 
 ```javascript
 const Waterwheel = require('waterwheel');
