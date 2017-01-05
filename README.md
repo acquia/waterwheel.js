@@ -56,55 +56,23 @@ Waterwheel when instantiated accepts a single object,
   - `credentials`: An object containing the OAuth Bearer token used to authenticate with Drupal. Currently Waterwheel requires a token for all requests. The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
   - `timeout`: How long an HTTP request should idle for before being canceled.
+  - `jsonapiPrefix`: If you have overridden the JSON API prefix, specify it here and Waterwheel will use this over the default of `jsonapi`.
 
   Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`.
 
 ### Populate `waterwheel` resources
 
-If you are supplying a resources object when `waterwheel` is instantiated, you do not need to use `.populateResources()` to fetch the resources prior to making any subsequent API calls.
+If you are supplying a resources object when `waterwheel` is instantiated, you do not need to use `.populateResources()` to fetch the resources prior to making any subsequent API calls. Waterwheel will fetch your Swagger (OpenAPI) document and attempt to automatically parse and create resources for you. Waterwheel.js currently expects the [Waterwheel Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled, however, the intent is to remove that dependency, by adding the necessary functionality to Drupal core, making that separate module ​_obsolete_​.
 
 ```javascript
-waterwheel.populateResources()
-  .then(res => {
-    /*
-    [ 'comment',
-    'file',
-    'menu',
-    'node.article',
-    'node.page',
-    'node_type.content_type',
-    'query',
-    'taxonomy_term.tags',
-    'taxonomy_vocabulary',
-    'user' ]
-     */
+waterwheel.populateResources('http://test.dev/swagger.json')
+  .then(() => {
+    // ...
   });
 ```
 
-Waterwheel currently expects the [Waterwheel Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled, however, the intent is to remove that dependency, by adding the necessary functionality to Drupal core, making that separate module ​_obsolete_​.
-
-### Manually add resources to `waterwheel`
-
-```javascript
-waterwheel.addResources(
-  {myNewResource: {
-    base: {{ base url }},
-    credentials: {{ credentials }},
-    methods: {{ methods }},
-    entity: 'node',
-    bundle: 'page',
-    resourceInfo: {{ extended information path }}
-  }}
-);
-```
-
-When adding resources the parent object key will be used to identify the new resource, `myNewResource` in the example.
-  - `base`: The base path for your Drupal instance. All request for this resource will use this path. This can be different from the path used when instantiating `waterwheel`.
-  - `credentials`: An object containing the `username` and `password` used to authenticate with Drupal. This can be different from the credentials used when instantiating `waterwheel`.
-  - `methods`: An object containing the following keys, `GET`, `POST`, `PATCH`, `DELETE`. Each key should contain the path suffix that the action can be preformed on.
-  - `entity`: The entity type that this resource should reference, ie. `node`.
-  - `bundle`: The bundle that this resource should reference, ie. `page`.
-  - `options`: The path used to get extended (field) information about the `bundle`. This is usually provided automatically by Waterwheel-Drupal, but can be manually specified.
+`.populateResources()` accepts one argument
+  - `resourcesLocation`: The full path to your Swagger (OpenAPI) documentation.
 
 ### Get resources within `waterwheel`
 
@@ -112,16 +80,11 @@ When adding resources the parent object key will be used to identify the new res
 waterwheel.getAvailableResources()
   .then(res => {
     /*
-    [ 'comment',
-    'file',
-    'menu',
-    'node.article',
-    'node.page',
-    'node_type.content_type',
-    'query',
-    'taxonomy_term.tags',
-    'taxonomy_vocabulary',
-    'user' ]
+    [
+      'node:article',
+      'node:page',
+      'user'
+    ]
     */
   });
 ```
@@ -134,7 +97,7 @@ Each method is directly mapped to the `methods` key attached to the resource.
 #### `GET`
 
 ```javascript
-waterwheel.api.user.get(1)
+waterwheel.api['user'].get(1)
   .then(res => {
     // Drupal JSON Object
   })
@@ -149,7 +112,7 @@ waterwheel.api.user.get(1)
 #### `PATCH`
 
 ```javascript
-waterwheel.api.user.patch(1, {})
+waterwheel.api['user'].patch(1, {})
   .then(res => {
     // res
   })
@@ -165,7 +128,7 @@ waterwheel.api.user.patch(1, {})
 #### `POST`
 
 ```javascript
-waterwheel.api.user.post({})
+waterwheel.api['user'].post({})
   .then(res => {
     // res
   })
@@ -180,7 +143,7 @@ waterwheel.api.user.post({})
 #### `DELETE`
 
 ```javascript
-waterwheel.api.user.delete(1)
+waterwheel.api['user'].delete(1)
   .then(res => {
     // res
   })
@@ -194,16 +157,15 @@ waterwheel.api.user.delete(1)
 ### Set field values
 
 ```javascript
-waterwheel.populateResources()
-  .then(() => waterwheel.api.node.page.setField(1, {title: 'my favorite title'})) // Set a single value
-  .then(() => waterwheel.api.node.page.setField(1, [ // Set multiple values
-    {title: 'my favorite title'},
-    {email: ['a@aaa.com', 'b@bbb.com', 'c@ccc.com']}
-  ]))
-  .then(() => waterwheel.api.node.page.setField(1, [ // Pass additional message body data.
-    {title: 'my favorite title'},
-    {email: ['a@aaa.com', 'b@bbb.com', 'c@ccc.com']}
-  ], {body: [{value: 'foo'}]} ))
+waterwheel.api['node:page'].setFields(201, {
+  title: {
+    value: 'Hello World'
+  },
+  body: {
+    value: 'ok, a new body',
+    summary: 'ok, a new summary'
+  }
+})
   .then(res => {
     // Data sent to Drupal
   })
@@ -214,16 +176,13 @@ waterwheel.populateResources()
 
 `.setField()` accepts 3 arguments
   - `identifier`: The id of the entity you are setting field values on
-  - `fields`: Fields and values to be set on the entity.
-    - A single object can be passed, `{title: 'my favorite title'}`
-    - An array of objects can be passed, `[{title: 'my favorite title'}, {subtitle: 'my favorite sub title'}]`
-  - `additionalValues`: An object of fields (the objects keys), and values that are copied to the body data prior to the `PATCH` request. **Be aware that this happens last and could overwrite any previously set fields.**
+  - `fields`: Fields and values to be set on the entity. These should match the fields for the bundle.
 
 ### Get field metadata for an entity/bundle
 
 ```javascript
 waterwheel.populateResources()
-  .then(() => waterwheel.api.node.page.getFieldData())
+  .then(() => waterwheel.api['node:page'].getFieldData())
   .then(res => {
     // Field metadata
   })
@@ -237,7 +196,7 @@ waterwheel.populateResources()
 ### Get Embedded Resources
 
 ```javascript
-waterwheel.api.node.page.get(1, 'hal_json')
+waterwheel.api['node:page'].get(1, 'hal_json')
   .then(res => waterwheel.fetchEmbedded(res))
   .then(res => {
     // res
@@ -246,7 +205,7 @@ waterwheel.api.node.page.get(1, 'hal_json')
     // err
   });
 
-waterwheel.api.node.page.get(1, 'hal_json')
+waterwheel.api['node:page'].get(1, 'hal_json')
   .then(res => waterwheel.fetchEmbedded(res, ['my_field']))
   .then(res => {
     // res

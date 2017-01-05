@@ -1,0 +1,1609 @@
+{
+  "swagger": "2.0",
+  "schemes": [
+    "http"
+  ],
+  "info": {
+    "description": "@todo update",
+    "title": "d83xeditui - API",
+    "version": "No API version"
+  },
+  "paths": {
+    "\/node\/{node}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "node",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The nid,id, of the node."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#\/definitions\/node"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "node"
+        ],
+        "summary": "Get a Content",
+        "operationId": "entity:node:GET",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "node",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The nid,id, of the node."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The Content object",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/node"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "node"
+        ],
+        "summary": "Patch a Content",
+        "operationId": "entity:node:PATCH",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "node",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The nid,id, of the node."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Entity deleted"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "node"
+        ],
+        "summary": "Delete a Content",
+        "operationId": "entity:node:DELETE",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      }
+    },
+    "\/entity\/node": {
+      "post": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The Content object",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/node"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Entity created",
+            "schema": {
+              "$ref": "#\/definitions\/node"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "node"
+        ],
+        "summary": "Post a Content",
+        "operationId": "entity:node:POST",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      }
+    },
+    "\/user\/{user}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The uid,id, of the user."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#\/definitions\/user"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "summary": "Get a User",
+        "operationId": "entity:user:GET",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The uid,id, of the user."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The User object",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/user"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "summary": "Patch a User",
+        "operationId": "entity:user:PATCH",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The uid,id, of the user."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Entity deleted"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete a User",
+        "operationId": "entity:user:DELETE",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      }
+    },
+    "\/entity\/user": {
+      "post": {
+        "parameters": [
+          {
+            "name": "_format",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "json",
+              "api_json"
+            ],
+            "required": true,
+            "description": "Request format"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The User object",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/user"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Entity created",
+            "schema": {
+              "$ref": "#\/definitions\/user"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Bad data"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "summary": "Post a User",
+        "operationId": "entity:user:POST",
+        "schemes": [
+          "http"
+        ],
+        "security": [
+          {
+            "csrf_token": []
+          }
+        ]
+      }
+    }
+  },
+  "host": "d83xeditui.dev",
+  "basePath": "",
+  "securityDefinitions": {
+    "csrf_token": {
+      "type": "apiKey",
+      "name": "X-CSRF-Token",
+      "in": "header"
+    },
+    "basic_auth": {
+      "type": "basic"
+    }
+  },
+  "tags": [
+    {
+      "name": "node",
+      "description": "Entity type: Content",
+      "x-entity-type": "node"
+    },
+    {
+      "name": "user",
+      "description": "Entity type: User",
+      "x-entity-type": "user"
+    }
+  ],
+  "definitions": {
+    "node": {
+      "type": "object",
+      "title": "node Schema",
+      "description": "Describes the payload for \u0027node\u0027 entities.",
+      "properties": {
+        "nid": {
+          "title": "ID",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Integer value",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "uuid": {
+          "title": "UUID",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Text value",
+                "type": "string",
+                "format": "uuid",
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "vid": {
+          "title": "Revision ID",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Integer value",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "langcode": {
+          "title": "Language",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Language code",
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "type": {
+          "title": "Content type",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "title": "Content type ID",
+                "type": "string"
+              }
+            },
+            "required": [
+              "target_id"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "status": {
+          "title": "Publishing status",
+          "description": "A boolean indicating the published state.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": true
+            }
+          ],
+          "maxItems": 1
+        },
+        "title": {
+          "title": "Title",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Text value",
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "uid": {
+          "title": "Authored by",
+          "description": "The username of the content author.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "title": "User ID",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "target_id"
+            ],
+            "title": "User",
+            "description": "The referenced entity"
+          },
+          "maxItems": 1
+        },
+        "created": {
+          "title": "Authored on",
+          "description": "The time that the node was created.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "changed": {
+          "title": "Changed",
+          "description": "The time that the node was last edited.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "promote": {
+          "title": "Promoted to front page",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": true
+            }
+          ],
+          "maxItems": 1
+        },
+        "sticky": {
+          "title": "Sticky at top of lists",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": false
+            }
+          ],
+          "maxItems": 1
+        },
+        "revision_timestamp": {
+          "title": "Revision timestamp",
+          "description": "The time that the current revision was created.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "revision_uid": {
+          "title": "Revision user ID",
+          "description": "The user ID of the author of the current revision.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "title": "User ID",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "target_id"
+            ],
+            "title": "User",
+            "description": "The referenced entity"
+          },
+          "maxItems": 1
+        },
+        "revision_log": {
+          "title": "Revision log message",
+          "description": "Briefly describe the changes you have made.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Text value",
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": ""
+            }
+          ],
+          "maxItems": 1
+        },
+        "revision_translation_affected": {
+          "title": "Revision translation affected",
+          "description": "Indicates if the last edit of a translation belongs to current revision.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "default_langcode": {
+          "title": "Default translation",
+          "description": "A flag indicating whether this is the default translation.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": true
+            }
+          ],
+          "maxItems": 1
+        },
+        "path": {
+          "title": "URL alias",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "alias": {
+                "title": "Path alias",
+                "type": "string"
+              },
+              "pid": {
+                "title": "Path id",
+                "type": "integer"
+              }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "nid",
+        "uuid",
+        "vid",
+        "type",
+        "title",
+        "revision_translation_affected",
+        "path"
+      ],
+      "discriminator": "type"
+    },
+    "node:article": {
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/node"
+        },
+        {
+          "type": "object",
+          "title": "node:article Schema",
+          "description": "Use \u003Cem\u003Earticles\u003C\/em\u003E for time-sensitive content like news, press releases or blog posts.",
+          "properties": {
+            "body": {
+              "title": "Body",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "title": "Text",
+                    "type": "string"
+                  },
+                  "format": {
+                    "title": "Text format",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "maxItems": 1
+            },
+            "comment": {
+              "title": "Comments",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "title": "Comment status",
+                    "type": "integer"
+                  },
+                  "cid": {
+                    "title": "Last comment ID",
+                    "type": "integer"
+                  },
+                  "last_comment_timestamp": {
+                    "title": "Last comment timestamp",
+                    "description": "The time that the last comment was created.",
+                    "type": "integer"
+                  },
+                  "last_comment_name": {
+                    "title": "Last comment name",
+                    "description": "The name of the user posting the last comment.",
+                    "type": "string"
+                  },
+                  "last_comment_uid": {
+                    "title": "Last comment user ID",
+                    "type": "integer"
+                  },
+                  "comment_count": {
+                    "title": "Number of comments",
+                    "description": "The number of comments.",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "minItems": 1,
+              "default": [
+                {
+                  "status": 2,
+                  "cid": 0,
+                  "last_comment_name": "",
+                  "last_comment_timestamp": 0,
+                  "last_comment_uid": 0,
+                  "comment_count": 0
+                }
+              ],
+              "maxItems": 1
+            },
+            "field_image": {
+              "title": "Image",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "target_id": {
+                    "title": "File ID",
+                    "type": "integer"
+                  },
+                  "alt": {
+                    "title": "Alternative text",
+                    "description": "Alternative image text, for the image\u0027s \u0027alt\u0027 attribute.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Image title text, for the image\u0027s \u0027title\u0027 attribute.",
+                    "type": "string"
+                  },
+                  "width": {
+                    "title": "Width",
+                    "description": "The width of the image in pixels.",
+                    "type": "integer"
+                  },
+                  "height": {
+                    "title": "Height",
+                    "description": "The height of the image in pixels.",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "target_id"
+                ],
+                "title": "File",
+                "description": "The referenced entity"
+              },
+              "maxItems": 1
+            },
+            "field_tags": {
+              "title": "Tags",
+              "description": "Enter a comma-separated list. For example: Amsterdam, Mexico City, \u0022Cleveland, Ohio\u0022",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "target_id": {
+                    "title": "Taxonomy term ID",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "target_id"
+                ],
+                "title": "Taxonomy term",
+                "description": "The referenced entity"
+              }
+            }
+          },
+          "required": [
+            "nid",
+            "uuid",
+            "vid",
+            "type",
+            "title",
+            "revision_translation_affected",
+            "path",
+            "comment"
+          ]
+        }
+      ]
+    },
+    "node:page": {
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/node"
+        },
+        {
+          "type": "object",
+          "title": "node:page Schema",
+          "description": "Use \u003Cem\u003Ebasic pages\u003C\/em\u003E for your static content, such as an \u0027About us\u0027 page.",
+          "properties": {
+            "promote": {
+              "title": "Promoted to front page",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "title": "Boolean value",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "default": [
+                {
+                  "value": false
+                }
+              ],
+              "maxItems": 1
+            },
+            "body": {
+              "title": "Body",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "title": "Text",
+                    "type": "string"
+                  },
+                  "format": {
+                    "title": "Text format",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "maxItems": 1
+            }
+          },
+          "required": [
+            "nid",
+            "uuid",
+            "vid",
+            "type",
+            "title",
+            "revision_translation_affected",
+            "path"
+          ]
+        }
+      ]
+    },
+    "user": {
+      "type": "object",
+      "title": "user Schema",
+      "description": "Describes the payload for \u0027user\u0027 entities.",
+      "properties": {
+        "uid": {
+          "title": "User ID",
+          "description": "The user ID.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Integer value",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "uuid": {
+          "title": "UUID",
+          "description": "The user UUID.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Text value",
+                "type": "string",
+                "format": "uuid",
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "langcode": {
+          "title": "Language code",
+          "description": "The user language code.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Language code",
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "preferred_langcode": {
+          "title": "Preferred language code",
+          "description": "The user\u0027s preferred language code for receiving emails and viewing the site.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Language code",
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "preferred_admin_langcode": {
+          "title": "Preferred admin language code",
+          "description": "The user\u0027s preferred language code for viewing administration pages.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Language code",
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": ""
+            }
+          ],
+          "maxItems": 1
+        },
+        "name": {
+          "title": "Name",
+          "description": "The name of this user.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Text value",
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "pass": {
+          "title": "Password",
+          "description": "The password of this user (hashed).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "The hashed password",
+                "type": "string",
+                "maxLength": 255
+              },
+              "existing": {
+                "title": "Existing password",
+                "type": "string"
+              },
+              "pre_hashed": {
+                "title": "Determines if a password needs hashing",
+                "type": "boolean"
+              }
+            }
+          },
+          "maxItems": 1
+        },
+        "mail": {
+          "title": "Email",
+          "description": "The email of this user.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Email",
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": ""
+            }
+          ],
+          "maxItems": 1
+        },
+        "timezone": {
+          "title": "Timezone",
+          "description": "The timezone of this user.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Text value",
+                "type": "string",
+                "maxLength": 32
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "status": {
+          "title": "User status",
+          "description": "Whether the user is active or blocked.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": false
+            }
+          ],
+          "maxItems": 1
+        },
+        "created": {
+          "title": "Created",
+          "description": "The time that the user was created.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "changed": {
+          "title": "Changed",
+          "description": "The time that the user was last edited.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "maxItems": 1
+        },
+        "access": {
+          "title": "Last access",
+          "description": "The time that the user last accessed the site.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": 0
+            }
+          ],
+          "maxItems": 1
+        },
+        "login": {
+          "title": "Last login",
+          "description": "The time that the user last logged in.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Timestamp value",
+                "type": "number",
+                "format": "utc-millisec"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": 0
+            }
+          ],
+          "maxItems": 1
+        },
+        "init": {
+          "title": "Initial email",
+          "description": "The email address used for initial account creation.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Email",
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": ""
+            }
+          ],
+          "maxItems": 1
+        },
+        "roles": {
+          "title": "Roles",
+          "description": "The roles the user has.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "title": "Role ID",
+                "type": "string"
+              }
+            },
+            "required": [
+              "target_id"
+            ]
+          }
+        },
+        "default_langcode": {
+          "title": "Default translation",
+          "description": "A flag indicating whether this is the default translation.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Boolean value",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "default": [
+            {
+              "value": true
+            }
+          ],
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "uid",
+        "uuid",
+        "name"
+      ]
+    }
+  }
+}
