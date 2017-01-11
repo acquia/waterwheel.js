@@ -32,7 +32,7 @@ npm run build
 
 Ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks. Instructions for [Apache](http://enable-cors.org/server_apache.html) or [Nginx](http://enable-cors.org/server_nginx.html).
 
-The majority of the functionality in Waterwheel is dependent on the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel). Please install and enable this module in your Drupal site before attempting to use the functionality offered in this library.
+Some functionality in Waterwheel.js is dependent on the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel). Please install and enable this module in your Drupal site before attempting to use the functionality offered in this library.
 
 ## Documentation
 
@@ -41,20 +41,52 @@ The majority of the functionality in Waterwheel is dependent on the [Waterwheel-
 ```javascript
 // Server
 const Waterwheel = require('waterwheel');
-const waterwheel = new Waterwheel({base: 'http://test.dev', credentials: {oauth: '12345'}});
+const waterwheel = new Waterwheel({
+  base: 'http://drupal.localhost',
+  oauth: {
+    grant_type: 'GRANT-TYPE',
+    client_id: 'CLIENT-ID',
+    client_secret: 'CLIENT-SECRET',
+    username: 'USERNAME',
+    password: 'PASSWORD',
+    scope: 'SCOPE'
+  }
+});
 
 // Browser
 import '../../path/to/node_modules/waterwheel/dist/waterwheel.js'
-const waterwheel = new window.Waterwheel({base: 'http://test.dev', credentials: {oauth: '12345'}});
+const waterwheel = new Waterwheel({
+  base: 'http://drupal.localhost',
+  oauth: {
+    grant_type: 'GRANT-TYPE',
+    client_id: 'CLIENT-ID',
+    client_secret: 'CLIENT-SECRET',
+    username: 'USERNAME',
+    password: 'PASSWORD',
+    scope: 'SCOPE'
+  }
+});
 
 // With resources
-const waterwheel = new Waterwheel({base: 'http://test.dev', credentials: {oauth: '12345'}, resources: require('./resources.json')});
+const resources = require('./resources.json');
+const waterwheel = new Waterwheel({
+  base: 'http://drupal.localhost',
+  resources: resources,
+  oauth: {
+    grant_type: 'GRANT-TYPE',
+    client_id: 'CLIENT-ID',
+    client_secret: 'CLIENT-SECRET',
+    username: 'USERNAME',
+    password: 'PASSWORD',
+    scope: 'SCOPE'
+  }
+});
 ```
 
 Waterwheel when instantiated accepts a single object,
-  - `base`: The base path for your Drupal instance. All request paths will be built from this base
-  - `credentials`: An object containing the OAuth Bearer token used to authenticate with Drupal. Currently Waterwheel requires a token for all requests. The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
+  - `base`: The base path for your Drupal instance. All request paths will be built from this base.
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
+  - `oauth`: An object containing information required for fetching and refreshing OAuth Bearer tokens. _Currently Waterwheel requires a token for all requests._ The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
   - `timeout`: How long an HTTP request should idle for before being canceled.
   - `jsonapiPrefix`: If you have overridden the JSON API prefix, specify it here and Waterwheel will use this over the default of `jsonapi`.
 
