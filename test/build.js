@@ -58,11 +58,25 @@ test.cb('Waterwheel Browser', t => {
     nightmare
       .goto(`http://localhost:${t.context.port}/demo.html`)
       .evaluate(() => {
-        return new window.Waterwheel({base: 'http://foo.dev', credentials: {oauth: '123456'}});
+        return new window.Waterwheel({
+          base: 'http://drupal.localhost',
+          oauth: {
+            grant_type: 'password',
+            client_id: '22c6669c-82df-4efe-add3-5c3dca4d0f35',
+            client_secret: 'password',
+            username: 'admin',
+            password: 'password',
+            scope: 'administrator'
+          }
+        });
       })
       .then(result => {
-        t.deepEqual(result.options.credentials, {oauth: '123456'}, 'Unexpected credentials returned');
+        t.deepEqual(result.options.base, 'http://drupal.localhost', 'Unexpected base returned');
         t.end();
-      });
+      })
+      .catch(err => {
+        console.log(err);
+        t.end();
+      })
   });
 });

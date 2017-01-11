@@ -1,22 +1,22 @@
 {
   "_links": {
     "self": {
-      "href": "http://foo.dev/page/bruce-wayne?_format=hal_json"
+      "href": "http://drupal.localhost/page/bruce-wayne?_format=hal_json"
     },
     "type": {
-      "href": "http://foo.dev/rest/type/node/page"
+      "href": "http://drupal.localhost/rest/type/node/page"
     },
-    "http://foo.dev/rest/relation/node/page/uid": [{
-      "href": "http://foo.dev/user/1?_format=hal_json",
+    "http://drupal.localhost/rest/relation/node/page/uid": [{
+      "href": "http://drupal.localhost/user/1?_format=hal_json",
       "lang": "en"
     }],
-    "http://foo.dev/rest/relation/node/page/revision_uid": [{
-      "href": "http://foo.dev/user/1?_format=hal_json"
+    "http://drupal.localhost/rest/relation/node/page/revision_uid": [{
+      "href": "http://drupal.localhost/user/1?_format=hal_json"
     }],
-    "http://foo.dev/rest/relation/node/page/field_actor": [{
-      "href": "http://foo.dev/node/6?_format=hal_json"
+    "http://drupal.localhost/rest/relation/node/page/field_actor": [{
+      "href": "http://drupal.localhost/node/6?_format=hal_json"
     }, {
-      "href": "http://foo.dev/node/8?_format=hal_json"
+      "href": "http://drupal.localhost/node/8?_format=hal_json"
     }]
   },
   "nid": [{
@@ -40,13 +40,13 @@
     "lang": "en"
   }],
   "_embedded": {
-    "http://foo.dev/rest/relation/node/page/uid": [{
+    "http://drupal.localhost/rest/relation/node/page/uid": [{
       "_links": {
         "self": {
-          "href": "http://foo.dev/user/1?_format=hal_json"
+          "href": "http://drupal.localhost/user/1?_format=hal_json"
         },
         "type": {
-          "href": "http://foo.dev/rest/type/user/user"
+          "href": "http://drupal.localhost/rest/type/user/user"
         }
       },
       "uuid": [{
@@ -54,26 +54,26 @@
       }],
       "lang": "en"
     }],
-    "http://foo.dev/rest/relation/node/page/revision_uid": [{
+    "http://drupal.localhost/rest/relation/node/page/revision_uid": [{
       "_links": {
         "self": {
-          "href": "http://foo.dev/user/1?_format=hal_json"
+          "href": "http://drupal.localhost/user/1?_format=hal_json"
         },
         "type": {
-          "href": "http://foo.dev/rest/type/user/user"
+          "href": "http://drupal.localhost/rest/type/user/user"
         }
       },
       "uuid": [{
         "value": "b578592a-a751-4993-9060-53f488597e59"
       }]
     }],
-    "http://foo.dev/rest/relation/node/page/field_actor": [{
+    "http://drupal.localhost/rest/relation/node/page/field_actor": [{
       "_links": {
         "self": {
-          "href": "http://foo.dev/node/6?_format=hal_json"
+          "href": "http://drupal.localhost/node/6?_format=hal_json"
         },
         "type": {
-          "href": "http://foo.dev/rest/type/node/actor"
+          "href": "http://drupal.localhost/rest/type/node/actor"
         }
       },
       "uuid": [{
@@ -82,10 +82,10 @@
     }, {
       "_links": {
         "self": {
-          "href": "http://foo.dev/node/8?_format=hal_json"
+          "href": "http://drupal.localhost/node/8?_format=hal_json"
         },
         "type": {
-          "href": "http://foo.dev/rest/type/node/actor"
+          "href": "http://drupal.localhost/rest/type/node/actor"
         }
       },
       "uuid": [{
