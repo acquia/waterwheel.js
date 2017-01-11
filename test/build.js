@@ -77,6 +77,6 @@ test.cb('Waterwheel Browser', t => {
       .catch(err => {
         console.log(err);
         t.end();
-      })
+      });
   });
 });
