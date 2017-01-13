@@ -86,7 +86,8 @@ test('Existing OAuth Token', t => {
       'access_token': '5678',
       'refresh_token': '789'
     }
-  }));  const currentTime = new Date().getTime();
+  }));
+  const currentTime = new Date().getTime();
   const OAuth = rs.require('../lib/helpers/oauth');
   const existingTokens = { access_token: '1234', refresh_token: '456' };
   const oauth = new OAuth(t.context.baseURL, Object.assign(t.context.oauthOptions, existingTokens));
@@ -123,3 +124,12 @@ test('Reuse existing request for new token', t => {
     });
 });
 
+test('Remove bearerPromise when request for token fails', t => {
+  const OAuth = rs.require('../lib/helpers/oauth');
+  const oauth = new OAuth(t.context.baseURL, t.context.oauthOptions);
+  rs.subvert('axios', () => Promise.reject());
+  return oauth.getToken()
+    .catch(e => {
+      t.falsy(oauth.bearerPromise);
+    })
+});
