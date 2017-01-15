@@ -48,8 +48,8 @@
     "url": "https://github.com/acquia/waterwheel.git"
   },
   "engines": {
-    "node": "~6.0.0",
-    "npm": "~3.8.6"
+    "node": ">=6.0.0",
+    "npm": ">=3.8.6"
   },
   "ava": {
     "files": [

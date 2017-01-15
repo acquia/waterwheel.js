@@ -175,6 +175,29 @@ test('Patch', t => {
     });
 });
 
+test('Delete', t => {
+  rs.subvert('axios', options => (
+    Promise.resolve({data: options})
+  ));
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+  const jsonapi = new t.context.JSONAPI(t.context.options, request);
+  return jsonapi.delete('node/article', 1234)
+    .then(res => {
+      t.deepEqual({
+        method: 'DELETE',
+        timeout: 500,
+        url: `${t.context.baseURL}/jsonapi/node/article/1234?_format=api_json`,
+        headers:{
+          Authorization: 'Bearer 1234',
+          'Content-Type': 'application/vnd.api+json'
+        }
+      }, res);
+    });
+});
+
 test('Custom Prefix', t => {
   rs.subvert('axios', options => (
     Promise.resolve({data: options})
