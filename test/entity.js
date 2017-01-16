@@ -1,10 +1,8 @@
 const test = require('ava');
-let requireSubvert = require('require-subvert')(__dirname);
+const rs = require('require-subvert')(__dirname);
 
 test.beforeEach(t => {
   t.context.options = {
-    base: 'http://foo.dev',
-    credentials: {oauth: '123456'},
     methods: {
       'GET': {path: '/comment/{comment}'},
       'POST': {path: '/entity/comment'},
@@ -42,46 +40,69 @@ test.beforeEach(t => {
       }
     }
   };
+  t.context.oauth = rs.require('./stubs/oauth');
+  t.context.request = rs.require('../lib/helpers/request');
+  t.context.baseURL = 'http://drupal.localhost';
+  t.context.oauthOptions = {
+    grant_type: 'password',
+    client_id: '22c6669c-82df-4efe-add3-5c3dca4d0f35',
+    client_secret: 'password',
+    username: 'admin',
+    password: 'password',
+    scope: 'administrator'
+  };
 });
 
 test.afterEach.cb(t => {
-  requireSubvert.cleanUp();
+  rs.cleanUp();
   t.end();
 });
 
 // Get
 test('GET', t => {
-  requireSubvert.subvert('axios', options => Promise.resolve({data: options}));
-  const Entity = requireSubvert.require('../lib/entity');
-  return new Entity(t.context.options).get(1)
+  rs.subvert('axios', options => Promise.resolve({data: options}));
+
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  return new Entity(t.context.options, request).get(1)
     .then(res => {
       t.deepEqual({
         method: 'GET',
         timeout: 500,
-        url: 'http://foo.dev/comment/1?_format=json',
-        headers: {Authorization:'Bearer 123456'}
+        url: `${t.context.baseURL}/comment/1?_format=json`,
+        headers: {Authorization:'Bearer 1234'}
       }, res, 'Unexpected response.');
     });
 });
 
 // Patch
 test('PATCH', t => {
-  requireSubvert.subvert('axios', options => {
-    if (options.url === `${t.context.options.base}/rest/session/token`) {
+  rs.subvert('axios', options => {
+    if (options.url === `${t.context.baseURL}/rest/session/token`) {
       return Promise.resolve({data: '1234567890'});
     }
     return Promise.resolve({data: options});
   });
-  const Entity = requireSubvert.require('../lib/entity');
-  return new Entity(t.context.options).patch(1, {foo: 'bar'})
+
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  return new Entity(t.context.options, request).patch(1, {foo: 'bar'})
     .then(res => {
       t.deepEqual({
         method: 'PATCH',
         timeout: 500,
-        url: 'http://foo.dev/comment/1',
+        url: `${t.context.baseURL}/comment/1`,
         headers: {
           'X-CSRF-Token': '1234567890',
-          Authorization: 'Bearer 123456',
+          Authorization: 'Bearer 1234',
           'Content-Type': 'application/json'
         },
         data: {foo: 'bar'}
@@ -90,12 +111,17 @@ test('PATCH', t => {
 });
 
 test.cb('Set Non-Object Body', t => {
-  requireSubvert.subvert('axios', () => (
+  rs.subvert('axios', () => (
     Promise.resolve({data: 'setNonObjectBody'})
   ));
 
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
 
   entity.patch(1)
     .then(res => {
@@ -106,22 +132,28 @@ test.cb('Set Non-Object Body', t => {
 
 // Post
 test('POST', t => {
-  requireSubvert.subvert('axios', options => {
-    if (options.url === `${t.context.options.base}/rest/session/token`) {
+  rs.subvert('axios', options => {
+    if (options.url === `${t.context.baseURL}/rest/session/token`) {
       return Promise.resolve({data: '333'});
     }
     return Promise.resolve({data: options});
   });
-  const Entity = requireSubvert.require('../lib/entity');
-  return new Entity(t.context.options).post({foo: 'bar'}, 'application/json', false)
+
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  return new Entity(t.context.options, request).post({foo: 'bar'}, 'application/json', false)
     .then(res => {
       t.deepEqual({
         method: 'POST',
         timeout: 500,
-        url: 'http://foo.dev/entity/comment',
+        url: `${t.context.baseURL}/entity/comment`,
         headers: {
           'X-CSRF-Token': '333',
-          Authorization: 'Bearer 123456',
+          Authorization: 'Bearer 1234',
           'Content-Type': 'application/json'
         },
         data: {foo: 'bar'}
@@ -130,14 +162,20 @@ test('POST', t => {
 });
 
 test('POST - Missing Fields', t => {
-  requireSubvert.subvert('axios', options => {
-    if (options.url === `${t.context.options.base}/rest/session/token`) {
+  rs.subvert('axios', options => {
+    if (options.url === `${t.context.baseURL}/rest/session/token`) {
       return Promise.resolve({data: '333'});
     }
     return Promise.resolve({data: options});
   });
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
   entity.options.metadata = {
     requiredFields: ['title', 'body']
   };
@@ -148,14 +186,20 @@ test('POST - Missing Fields', t => {
 });
 
 test('POST - Correct Fields', t => {
-  requireSubvert.subvert('axios', options => {
-    if (options.url === `${t.context.options.base}/rest/session/token`) {
+  rs.subvert('axios', options => {
+    if (options.url === `${t.context.baseURL}/rest/session/token`) {
       return Promise.resolve({data: '333'});
     }
     return Promise.resolve({data: options});
   });
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
   entity.options.metadata = {
     requiredFields: ['title', 'body']
   };
@@ -164,10 +208,10 @@ test('POST - Correct Fields', t => {
       t.deepEqual({
         method: 'POST',
         timeout: 500,
-        url: 'http://foo.dev/entity/comment',
+        url: `${t.context.baseURL}/entity/comment`,
         headers: {
           'X-CSRF-Token': '333',
-          Authorization: 'Bearer 123456',
+          Authorization: 'Bearer 1234',
           'Content-Type': 'application/json'
         },
         data: {title: 'foo', body: 'bar'}
@@ -177,22 +221,28 @@ test('POST - Correct Fields', t => {
 
 // Delete
 test('DELETE', t => {
-  requireSubvert.subvert('axios', options => {
-    if (options.url === `${t.context.options.base}/rest/session/token`) {
+  rs.subvert('axios', options => {
+    if (options.url === `${t.context.baseURL}/rest/session/token`) {
       return Promise.resolve({data: '444'});
     }
     return Promise.resolve({data: options});
   });
-  const Entity = requireSubvert.require('../lib/entity');
-  return new Entity(t.context.options).delete(1)
+
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  return new Entity(t.context.options, request).delete(1)
     .then(res => {
       t.deepEqual({
         method: 'DELETE',
         timeout: 500,
-        url: 'http://foo.dev/comment/1',
+        url: `${t.context.baseURL}/comment/1`,
         headers: {
           'X-CSRF-Token': '444',
-          Authorization: 'Bearer 123456'
+          Authorization: 'Bearer 1234'
         }
       }, res, 'Unexpected body returned.');
     });
@@ -200,8 +250,8 @@ test('DELETE', t => {
 
 // Missing methods
 test.cb('Missing GET Method', t => {
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, {});
   delete entity.options.methods.GET;
   entity.get(1)
     .catch(err => {
@@ -211,8 +261,8 @@ test.cb('Missing GET Method', t => {
 });
 
 test.cb('Missing PATCH Method', t => {
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, {});
   delete entity.options.methods.PATCH;
   entity.patch(1, {foo: 'bar'})
     .catch(err => {
@@ -222,8 +272,8 @@ test.cb('Missing PATCH Method', t => {
 });
 
 test.cb('Missing POST Method', t => {
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, {});
   delete entity.options.methods.POST;
   entity.post({foo: 'bar'})
     .catch(err => {
@@ -233,8 +283,8 @@ test.cb('Missing POST Method', t => {
 });
 
 test.cb('Missing DELETE Method', t => {
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, {});
   delete entity.options.methods.DELETE;
   entity.delete(1)
     .catch(err => {
@@ -244,12 +294,17 @@ test.cb('Missing DELETE Method', t => {
 });
 
 test.cb('Set Field Data', t => {
-  requireSubvert.subvert('axios', (options) => (
+  rs.subvert('axios', (options) => (
     Promise.resolve({data: options})
   ));
 
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
 
   entity.setFields(201, {
     title: {
@@ -273,12 +328,17 @@ test.cb('Set Field Data', t => {
 });
 
 test.cb('Set Field Data - Incorrect Prop', t => {
-  requireSubvert.subvert('axios', (options) => (
+  rs.subvert('axios', (options) => (
     Promise.resolve({data: options})
   ));
 
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
 
   entity.setFields(201, {
     title: {
@@ -302,12 +362,17 @@ test.cb('Set Field Data - Incorrect Prop', t => {
 });
 
 test.cb('Set Field Data - Bad Key', t => {
-  requireSubvert.subvert('axios', (options) => (
+  rs.subvert('axios', (options) => (
     Promise.resolve({data: options})
   ));
 
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
 
   entity.setFields(201, {
     foo: {
@@ -321,12 +386,17 @@ test.cb('Set Field Data - Bad Key', t => {
 });
 
 test.cb('Set Field Data - Bad Keys', t => {
-  requireSubvert.subvert('axios', (options) => (
+  rs.subvert('axios', (options) => (
     Promise.resolve({data: options})
   ));
 
-  const Entity = requireSubvert.require('../lib/entity');
-  const entity = new Entity(t.context.options);
+  const request = new t.context.request({
+    base: t.context.baseURL,
+    oauth: t.context.oauthOptions
+  }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  const Entity = rs.require('../lib/entity');
+  const entity = new Entity(t.context.options, request);
 
   entity.setFields(201, {
     foo: {
