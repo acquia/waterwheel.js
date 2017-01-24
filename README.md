@@ -357,3 +357,12 @@ waterwheel.jsonapi.post('node/article', postData)
     // Created page.
   });
 ```
+
+#### Delete
+
+```javascript
+waterwheel.jsonapi.delete('node/article', 'cc1b95c7-1758-4833-89f2-7053ae8e7906')
+  .then(() => {
+    // Delete successful
+  });
+```
