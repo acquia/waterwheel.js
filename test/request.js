@@ -203,3 +203,24 @@ test('Options', t => {
     t.is(5, res.length, 'Unexpected amount of promises returned.');
   });
 });
+
+test('Request - No Validation', t => {
+  rs.subvert('axios', (options) => Promise.resolve({data: options}));
+  const Request = rs.require('../lib/helpers/request');
+
+  t.context.options.accessCheck = false;
+
+  const request = new Request(t.context.options, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
+
+  return request.issueRequest(methods.get, '/entity/1', '12345')
+    .then(res => t.deepEqual(
+      res,
+      {
+        method: 'GET',
+        timeout: 500,
+        url: 'http://drupal.localhost/entity/1',
+        headers: {}
+      },
+      'Unexpected body returned.'
+    ));
+});
