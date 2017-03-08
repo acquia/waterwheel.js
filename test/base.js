@@ -29,6 +29,14 @@ test('Waterwheel Creation', t => {
   t.is(true, new t.context.Waterwheel(t.context.initData) instanceof t.context.Waterwheel, 'Unexpected creation.');
 });
 
+test('Waterwheel Creation - No Validation', t => {
+
+  t.is(true, new t.context.Waterwheel({
+    base: 'http://drupal.localhost',
+    validation: false
+  }) instanceof t.context.Waterwheel, 'Unexpected creation.');
+});
+
 test('Get URL Base', t => {
   const waterwheel = new t.context.Waterwheel(t.context.initData);
   t.is(t.context.initData.base, waterwheel.getBase(), 'Unexpected URL base.');
