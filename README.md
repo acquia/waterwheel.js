@@ -88,6 +88,7 @@ Waterwheel when instantiated accepts a single object,
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
   - `oauth`: An object containing information required for fetching and refreshing OAuth Bearer tokens. _Currently Waterwheel requires a token for all requests._ The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
   - `timeout`: How long an HTTP request should idle for before being canceled.
+  - `accessCheck`: indicates whether authentication should be used. Possible values are `true` and `false`.
   - `jsonapiPrefix`: If you have overridden the JSON API prefix, specify it here and Waterwheel will use this over the default of `jsonapi`.
 
   Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`.
