@@ -54,8 +54,7 @@ const waterwheel = new Waterwheel({
 });
 
 // Browser
-import '../../path/to/node_modules/waterwheel/dist/waterwheel.js'
-const waterwheel = new Waterwheel({
+const waterwheel = new window.Waterwheel({
   base: 'http://drupal.localhost',
   oauth: {
     grant_type: 'GRANT-TYPE',
@@ -86,9 +85,10 @@ const waterwheel = new Waterwheel({
 Waterwheel when instantiated accepts a single object,
   - `base`: The base path for your Drupal instance. All request paths will be built from this base.
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
-  - `oauth`: An object containing information required for fetching and refreshing OAuth Bearer tokens. _Currently Waterwheel requires a token for all requests._ The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
+  - `oauth`: An object containing information required for fetching and refreshing OAuth Bearer tokens. The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
   - `timeout`: How long an HTTP request should idle for before being canceled.
   - `jsonapiPrefix`: If you have overridden the JSON API prefix, specify it here and Waterwheel will use this over the default of `jsonapi`.
+  - `validation`: A boolean that defaults to `true`. If set to false, every request will ignore any existing OAuth information, allowing you to make *requests without any authentication*.
 
   Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`.
 
