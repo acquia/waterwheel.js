@@ -4,10 +4,10 @@ const rs = require('require-subvert')(__dirname);
 test.beforeEach(t => {
   t.context.options = {
     methods: {
-      'GET': {path: '/comment/{comment}'},
-      'POST': {path: '/entity/comment'},
-      'DELETE': {path: '/comment/{comment}'},
-      'PATCH': {path: '/comment/{comment}'}
+      'get': {path: '/comment/{comment}'},
+      'post': {path: '/entity/comment'},
+      'delete': {path: '/comment/{comment}'},
+      'patch': {path: '/comment/{comment}'}
     },
     bundle: 'article',
     entity: 'node',
@@ -68,10 +68,11 @@ test('GET', t => {
   }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
 
   const Entity = rs.require('../lib/entity');
+  console.log(new Entity(t.context.options, request).options.methods.hasOwnProperty('get'));
   return new Entity(t.context.options, request).get(1)
     .then(res => {
       t.deepEqual({
-        method: 'GET',
+        method: 'get',
         timeout: 500,
         url: `${t.context.baseURL}/comment/1?_format=json`,
         headers: {Authorization:'Bearer 1234'}
@@ -97,7 +98,7 @@ test('PATCH', t => {
   return new Entity(t.context.options, request).patch(1, {foo: 'bar'})
     .then(res => {
       t.deepEqual({
-        method: 'PATCH',
+        method: 'patch',
         timeout: 500,
         url: `${t.context.baseURL}/comment/1`,
         headers: {
@@ -148,7 +149,7 @@ test('POST', t => {
   return new Entity(t.context.options, request).post({foo: 'bar'}, 'application/json', false)
     .then(res => {
       t.deepEqual({
-        method: 'POST',
+        method: 'post',
         timeout: 500,
         url: `${t.context.baseURL}/entity/comment`,
         headers: {
@@ -206,7 +207,7 @@ test('POST - Correct Fields', t => {
   return entity.post({title: 'foo', body: 'bar'}, 'application/json', true)
     .then(res => {
       t.deepEqual({
-        method: 'POST',
+        method: 'post',
         timeout: 500,
         url: `${t.context.baseURL}/entity/comment`,
         headers: {
@@ -237,7 +238,7 @@ test('DELETE', t => {
   return new Entity(t.context.options, request).delete(1)
     .then(res => {
       t.deepEqual({
-        method: 'DELETE',
+        method: 'delete',
         timeout: 500,
         url: `${t.context.baseURL}/comment/1`,
         headers: {
@@ -252,10 +253,10 @@ test('DELETE', t => {
 test.cb('Missing GET Method', t => {
   const Entity = rs.require('../lib/entity');
   const entity = new Entity(t.context.options, {});
-  delete entity.options.methods.GET;
+  delete entity.options.methods.get;
   entity.get(1)
     .catch(err => {
-      t.is('The method, GET, is not available.', err);
+      t.is('The method, get, is not available.', err);
       t.end();
     });
 });
@@ -263,10 +264,10 @@ test.cb('Missing GET Method', t => {
 test.cb('Missing PATCH Method', t => {
   const Entity = rs.require('../lib/entity');
   const entity = new Entity(t.context.options, {});
-  delete entity.options.methods.PATCH;
+  delete entity.options.methods.patch;
   entity.patch(1, {foo: 'bar'})
     .catch(err => {
-      t.is('The method, PATCH, is not available.', err);
+      t.is('The method, patch, is not available.', err);
       t.end();
     });
 });
@@ -274,10 +275,10 @@ test.cb('Missing PATCH Method', t => {
 test.cb('Missing POST Method', t => {
   const Entity = rs.require('../lib/entity');
   const entity = new Entity(t.context.options, {});
-  delete entity.options.methods.POST;
+  delete entity.options.methods.post;
   entity.post({foo: 'bar'})
     .catch(err => {
-      t.is('The method, POST, is not available.', err);
+      t.is('The method, post, is not available.', err);
       t.end();
     });
 });
@@ -285,10 +286,10 @@ test.cb('Missing POST Method', t => {
 test.cb('Missing DELETE Method', t => {
   const Entity = rs.require('../lib/entity');
   const entity = new Entity(t.context.options, {});
-  delete entity.options.methods.DELETE;
+  delete entity.options.methods.delete;
   entity.delete(1)
     .catch(err => {
-      t.is('The method, DELETE, is not available.', err);
+      t.is('The method, delete, is not available.', err);
       t.end();
     });
 });

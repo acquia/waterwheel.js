@@ -110,7 +110,7 @@ test('Custom Headers', t => {
   const request = new Request(t.context.options, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
   const expectedResult = [
     {
-      method: 'GET',
+      method: 'get',
       timeout: 500,
       url: `${t.context.baseURL}/entity/1`,
       headers: {
@@ -119,7 +119,7 @@ test('Custom Headers', t => {
       }
     },
     {
-      method: 'GET',
+      method: 'get',
       timeout: 500,
       url: `${t.context.baseURL}/entity/1`,
       headers: {
@@ -144,7 +144,7 @@ test('Options', t => {
   const request = new Request(t.context.options, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
   const expectedResult = [
     {
-      method: 'GET',
+      method: 'get',
       timeout: 500,
       url: `${t.context.baseURL}/entity/1`,
       headers: {
@@ -152,7 +152,7 @@ test('Options', t => {
       }
     },
     {
-      method: 'GET',
+      method: 'get',
       timeout: 500,
       url: 'http://dev.foo/entity/1',
       headers: {
@@ -161,7 +161,7 @@ test('Options', t => {
       }
     },
     {
-      method: 'PATCH',
+      method: 'patch',
       timeout: 500,
       url: `${t.context.baseURL}/entity/1`,
       headers: {
@@ -172,7 +172,7 @@ test('Options', t => {
       data: {body: 'content'}
     },
     {
-      method: 'POST',
+      method: 'post',
       timeout: 500,
       url: `${t.context.baseURL}/entity/1`,
       headers: {
@@ -182,7 +182,7 @@ test('Options', t => {
       data: {body: 'content'}
     },
     {
-      method: 'DELETE',
+      method: 'delete',
       timeout: 500,
       url: `${t.context.baseURL}/entity/1`,
       headers: {
@@ -216,7 +216,7 @@ test('Request - No Validation', t => {
     .then(res => t.deepEqual(
       res,
       {
-        method: 'GET',
+        method: 'get',
         timeout: 500,
         url: 'http://drupal.localhost/entity/1',
         headers: {}
@@ -234,5 +234,5 @@ test('No Validation', t => {
     validation: false
   }, new t.context.oauth(t.context.baseURL, {}));
   return request.issueRequest(methods.get, '/entity/1', '12345', {})
-    .then(res => t.deepEqual({method: 'GET', timeout: 500, url: 'http://drupal.localhost/entity/1', headers: {}}, res, 'Unexpected headers returned.'));
+    .then(res => t.deepEqual({method: 'get', timeout: 500, url: 'http://drupal.localhost/entity/1', headers: {}}, res, 'Unexpected headers returned.'));
 });

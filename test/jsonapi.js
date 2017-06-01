@@ -4,10 +4,10 @@ const rs = require('require-subvert')(__dirname);
 test.beforeEach(t => {
   t.context.options = {
     methods: {
-      'GET': '/comment/{comment}',
-      'POST': '/entity/comment',
-      'DELETE': '/comment/{comment}',
-      'PATCH': '/comment/{comment}'
+      'get': '/comment/{comment}',
+      'post': '/entity/comment',
+      'delete': '/comment/{comment}',
+      'patch': '/comment/{comment}'
     },
     more: '/entity/types/comment/{bundle}',
     entity: 'node',
@@ -133,7 +133,7 @@ test('Post', t => {
   return jsonapi.post('node/article', {some: 'data'})
     .then(res => {
       t.deepEqual({
-        method: 'POST',
+        method: 'post',
         timeout: 500,
         url: `${t.context.baseURL}/jsonapi/node/article?_format=api_json`,
         headers:{
@@ -161,7 +161,7 @@ test('Patch', t => {
   return jsonapi.patch('node/article/1234', {some: 'data'})
     .then(res => {
       t.deepEqual({
-        method: 'PATCH',
+        method: 'patch',
         timeout: 500,
         url: `${t.context.baseURL}/jsonapi/node/article/1234?_format=api_json`,
         headers:{
@@ -187,7 +187,7 @@ test('Delete', t => {
   return jsonapi.delete('node/article', 1234)
     .then(res => {
       t.deepEqual({
-        method: 'DELETE',
+        method: 'delete',
         timeout: 500,
         url: `${t.context.baseURL}/jsonapi/node/article/1234?_format=api_json`,
         headers:{
