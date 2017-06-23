@@ -48,8 +48,7 @@ const waterwheel = new Waterwheel({
     client_id: 'CLIENT-ID',
     client_secret: 'CLIENT-SECRET',
     username: 'USERNAME',
-    password: 'PASSWORD',
-    scope: 'SCOPE'
+    password: 'PASSWORD'
   }
 });
 
@@ -61,8 +60,7 @@ const waterwheel = new window.Waterwheel({
     client_id: 'CLIENT-ID',
     client_secret: 'CLIENT-SECRET',
     username: 'USERNAME',
-    password: 'PASSWORD',
-    scope: 'SCOPE'
+    password: 'PASSWORD'
   }
 });
 
@@ -76,8 +74,7 @@ const waterwheel = new Waterwheel({
     client_id: 'CLIENT-ID',
     client_secret: 'CLIENT-SECRET',
     username: 'USERNAME',
-    password: 'PASSWORD',
-    scope: 'SCOPE'
+    password: 'PASSWORD'
   }
 });
 ```
