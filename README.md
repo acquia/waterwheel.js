@@ -32,7 +32,7 @@ npm run build
 
 Ensure that you have set up cross-origin resource sharing on your Drupal site to enable Waterwheel to perform necessary tasks. Instructions for [Apache](http://enable-cors.org/server_apache.html) or [Nginx](http://enable-cors.org/server_nginx.html).
 
-Some functionality in Waterwheel.js is dependent on the [Waterwheel-Drupal module](https://www.drupal.org/project/waterwheel). Please install and enable this module in your Drupal site before attempting to use the functionality offered in this library.
+Some functionality in Waterwheel.js is dependent on the [OpenAPI ](https://www.drupal.org/project/openapi) module. Please install and enable this module in your Drupal site before attempting to use the functionality offered in this library.
 
 ## Documentation
 
