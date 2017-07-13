@@ -36,10 +36,11 @@ Some functionality in Waterwheel.js is dependent on the [OpenAPI ](https://www.d
 
 ## Documentation
 
-### Require `waterwheel` in either a server or browser environment.
+### Using `waterwheel` in either a server or browser environment.
+
+#### Server
 
 ```javascript
-// Server
 const Waterwheel = require('waterwheel');
 const waterwheel = new Waterwheel({
   base: 'http://drupal.localhost',
@@ -51,8 +52,14 @@ const waterwheel = new Waterwheel({
     password: 'PASSWORD'
   }
 });
+```
 
-// Browser
+#### Browser
+
+```javascript
+// Include the 'release' version of Waterwheel prior to creating a new instance.
+// <script type="text/javascript" src="waterwheel.js"></script>
+
 const waterwheel = new window.Waterwheel({
   base: 'http://drupal.localhost',
   oauth: {
@@ -83,16 +90,21 @@ Waterwheel when instantiated accepts a single object,
   - `base`: The base path for your Drupal instance. All request paths will be built from this base.
   - `resources`: A JSON object that represents the resources available to `waterwheel`.
   - `oauth`: An object containing information required for fetching and refreshing OAuth Bearer tokens. The [Simple OAuth](https://www.drupal.org/project/simple_oauth) module is recommended for this.
+    - `grant_type`: The type of [OAuth 2 grant](https://tools.ietf.org/html/rfc6749#section-4.3). Currently `password` is the only supported value.
+    - `client_id`: The ID of your client.
+    - `client_secret`: The secret of your client.
+    - `username`: The user's username.
+    - `password`: The user's password.
   - `timeout`: How long an HTTP request should idle for before being canceled.
   - `accessCheck`: indicates whether authentication should be used. Possible values are `true` and `false`.
   - `jsonapiPrefix`: If you have overridden the JSON API prefix, specify it here and Waterwheel will use this over the default of `jsonapi`.
-  - `validation`: A boolean that defaults to `true`. If set to false, every request will ignore any existing OAuth information, allowing you to make *requests without any authentication*.
+  - `validation`: A boolean that defaults to `true`. If set to false, every request will ignore any existing OAuth information, allowing you to make *requests without any authentication*. If you have an _open_ API, than the [OAuth module](https://www.drupal.org/project/simple_oauth) is not needed.
 
-  Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`.
+Supplying the `resources` object is equivalent to calling `.populateResources()` but does not incur an HTTP request, and alleviates the need to call `.populateResources()` prior to making any requests. You can fetch this object by calling `waterwheel.fetchResources()`.
 
 ### Populate `waterwheel` resources
 
-If you are supplying a resources object when `waterwheel` is instantiated, you do not need to use `.populateResources()` to fetch the resources prior to making any subsequent API calls. Waterwheel will fetch your Swagger (OpenAPI) document and attempt to automatically parse and create resources for you. Waterwheel.js currently expects the [Waterwheel Drupal module](https://www.drupal.org/project/waterwheel) to be installed and enabled, however, the intent is to remove that dependency, by adding the necessary functionality to Drupal core, making that separate module ​_obsolete_​.
+If you are supplying a resources object when `waterwheel` is instantiated, you do not need to use `.populateResources()` to fetch the resources prior to making any subsequent API calls. Waterwheel will fetch your Swagger (OpenAPI) document and attempt to automatically parse and create resources for you. Waterwheel.js currently expects the [OpenAPI ](https://www.drupal.org/project/openapi) module to be installed and enabled, however, the intent is to remove that dependency, by adding the necessary functionality to Drupal core, making that separate module ​_obsolete_​.
 
 ```javascript
 waterwheel.populateResources('http://test.dev/swagger.json')
