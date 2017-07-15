@@ -11,9 +11,10 @@
   ],
   "license": "MIT",
   "url": "https://github.com/acquia/waterwheel",
-  "main": "lib/waterwheel.js",
+  "main": "dist/waterwheel.js",
+  "module": "dist/waterwheel.es6.js",
   "scripts": {
-    "build": "webpack --progress",
+    "build": "node tools/build",
     "test": "nyc --reporter=html ava -v && nyc report",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint ."
@@ -31,17 +32,17 @@
   },
   "devDependencies": {
     "ava": "0.16.0",
-    "babel-core": "6.8.0",
-    "babel-loader": "6.2.4",
-    "babel-preset-es2015": "6.6.0",
-    "browserify": "13.0.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.0",
     "coveralls": "2.11.9",
     "eslint": "2.9.0",
     "expose-loader": "0.7.1",
     "nightmare": "2.6.1",
     "nyc": "8.1.0",
     "require-subvert": "0.1.0",
-    "webpack": "1.13.0"
+    "rollup": "^0.45.2",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-node-resolve": "^3.0.0"
   },
   "repository": {
     "type": "git",
