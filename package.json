@@ -11,7 +11,7 @@
   ],
   "license": "MIT",
   "url": "https://github.com/acquia/waterwheel",
-  "main": "lib/waterwheel.js",
+  "main": "dist/waterwheel.js",
   "scripts": {
     "build": "webpack --progress",
     "test": "nyc --reporter=html ava -v && nyc report",
