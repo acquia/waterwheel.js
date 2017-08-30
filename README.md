@@ -264,7 +264,7 @@ When requesting embedded resources duplicates are removed to prevent extra HTTP 
 
 ### JSON API
 
-`waterwheel` contains provisional support for requesting data using the `json:api` format. Currently only `GET` requests are supported; this simplifies the instantiation of `waterwheel`.
+`waterwheel` contains provisional support for requesting data using the `json:api` format. Currently only `GET`, `POST` and `DELETE` requests are supported.
 
 ```javascript
 const Waterwheel = require('waterwheel');
@@ -327,7 +327,7 @@ waterwheel.jsonapi.get('node/article', {
 #### Filter With Operators
 
 ```javascript
-waterwheel.jsonapi.request('node/article', {filter: {
+waterwheel.jsonapi.get('node/article', {filter: {
   myFilter: {
     condition: {
       value: '8',
