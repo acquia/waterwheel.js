@@ -75,7 +75,6 @@ test.cb('Waterwheel Browser', t => {
         t.end();
       })
       .catch(err => {
-        console.log(err);
         t.end();
       });
   });
