@@ -2,10 +2,12 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-  entry: './index.js',
+  entry: './lib/waterwheel.js',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'waterwheel.js'
+    filename: 'waterwheel.js',
+    libraryTarget: 'umd',
+    library: 'Waterwheel'
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({

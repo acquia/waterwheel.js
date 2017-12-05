@@ -1,6 +1,6 @@
 {
   "name": "waterwheel",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "A generic JavaScript helper library to query and manipulate Drupal 8 via core REST",
   "author": "Preston So <preston.so@acquia.com>",
   "contributors": [
@@ -11,7 +11,7 @@
   ],
   "license": "MIT",
   "url": "https://github.com/acquia/waterwheel",
-  "main": "lib/waterwheel.js",
+  "main": "dist/waterwheel.js",
   "scripts": {
     "build": "webpack --progress",
     "test": "nyc --reporter=html ava -v && nyc report",
