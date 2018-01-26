@@ -68,7 +68,6 @@ test('GET', t => {
   }, new t.context.oauth(t.context.baseURL, t.context.oauthOptions));
 
   const Entity = rs.require('../lib/entity');
-  console.log(new Entity(t.context.options, request).options.methods.hasOwnProperty('get'));
   return new Entity(t.context.options, request).get(1)
     .then(res => {
       t.deepEqual({
