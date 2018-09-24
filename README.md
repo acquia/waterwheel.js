@@ -275,6 +275,7 @@ The `jsonapi.get()` method accepts 3 arguments,
   - `resource`: The `bundle` and the `entity` you want to request.
   - `params`: Any arguments that your request requires. These are translated to query string arguments prior to sending the request.
   - `id`: The UUID of a single entity to fetch. This can be overloaded to include the name of a related entity.
+  - `langcode`: Query by a specific language, if no translation available return data in the default language.
 
 The `jsonapi.post()` method accepts 2 arguments,
   - `resource`: The `bundle` and the `entity` you want to create.
@@ -286,6 +287,15 @@ The following examples outline some of the basic features of using `JSON API`.
 
 ```javascript
 waterwheel.jsonapi.get('node/article', {})
+.then(res => {
+  // res
+});
+```
+
+#### Collections/Lists in a specific language
+
+```javascript
+waterwheel.jsonapi.get('node/article', {}, false, 'de')
 .then(res => {
   // res
 });

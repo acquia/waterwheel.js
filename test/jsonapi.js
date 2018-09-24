@@ -54,7 +54,7 @@ test('Collections / Lists', t => {
   const jsonapi = new t.context.JSONAPI(t.context.options, request);
   return jsonapi.get('node/article', {})
     .then(res => {
-      t.is(`${t.context.baseURL}/jsonapi/node/article?_format=api_json`, res.url);
+      t.is(`${t.context.baseURL}/jsonapi/node/article`, res.url);
     });
 });
 
@@ -71,7 +71,7 @@ test('Related resources', t => {
   const jsonapi = new t.context.JSONAPI(t.context.options, request);
   return jsonapi.get('node/article', {}, 'cc1b95c7-1758-4833-89f2-7053ae8e7906/uid')
     .then(res => {
-      t.is(`${t.context.baseURL}/jsonapi/node/article/cc1b95c7-1758-4833-89f2-7053ae8e7906/uid?_format=api_json`, res.url);
+      t.is(`${t.context.baseURL}/jsonapi/node/article/cc1b95c7-1758-4833-89f2-7053ae8e7906/uid`, res.url);
     });
 });
 
@@ -94,7 +94,7 @@ test('Filter basic', t => {
     }
   })
     .then(res => {
-      t.is(`${t.context.baseURL}/jsonapi/node/article?_format=api_json&filter%5Buuid%5D%5Bvalue%5D=563196f5-4432-4964-9aeb-e4d326cb1330`, res.url);
+      t.is(`${t.context.baseURL}/jsonapi/node/article?filter%5Buuid%5D%5Bvalue%5D=563196f5-4432-4964-9aeb-e4d326cb1330`, res.url);
     });
 });
 
@@ -115,7 +115,7 @@ test('Filter with operator', t => {
     }
   })
     .then(res => {
-      t.is(`${t.context.baseURL}/jsonapi/node/article?_format=api_json&filter%5Bcreated%5D%5Bvalue%5D=1469001416&filter%5Bcreated%5D%5Boperator%5D=%3D`, res.url);
+      t.is(`${t.context.baseURL}/jsonapi/node/article?filter%5Bcreated%5D%5Bvalue%5D=1469001416&filter%5Bcreated%5D%5Boperator%5D=%3D`, res.url);
     });
 });
 
@@ -135,7 +135,7 @@ test('Post', t => {
       t.deepEqual({
         method: 'post',
         timeout: 500,
-        url: `${t.context.baseURL}/jsonapi/node/article?_format=api_json`,
+        url: `${t.context.baseURL}/jsonapi/node/article`,
         headers:{
           Authorization: 'Bearer 1234',
           'Content-Type': 'application/vnd.api+json'
@@ -163,7 +163,7 @@ test('Patch', t => {
       t.deepEqual({
         method: 'patch',
         timeout: 500,
-        url: `${t.context.baseURL}/jsonapi/node/article/1234?_format=api_json`,
+        url: `${t.context.baseURL}/jsonapi/node/article/1234`,
         headers:{
           Authorization: 'Bearer 1234',
           'Content-Type': 'application/vnd.api+json'
@@ -189,7 +189,7 @@ test('Delete', t => {
       t.deepEqual({
         method: 'delete',
         timeout: 500,
-        url: `${t.context.baseURL}/jsonapi/node/article/1234?_format=api_json`,
+        url: `${t.context.baseURL}/jsonapi/node/article/1234`,
         headers:{
           Authorization: 'Bearer 1234',
           'Content-Type': 'application/vnd.api+json'
@@ -213,6 +213,6 @@ test('Custom Prefix', t => {
   const jsonapi = new t.context.JSONAPI(options, request);
   return jsonapi.get('node/article', {})
     .then(res => {
-      t.is(`${t.context.baseURL}/fooapi/node/article?_format=api_json`, res.url);
+      t.is(`${t.context.baseURL}/fooapi/node/article`, res.url);
     });
 });
